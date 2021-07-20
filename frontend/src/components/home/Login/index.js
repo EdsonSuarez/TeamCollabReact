@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { login, updatePost } from "../../../actions/posts";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 export default function Login({ currentId, setCurrentId }) {
   const dispatch = useDispatch();
@@ -12,12 +13,16 @@ export default function Login({ currentId, setCurrentId }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     dispatch(login(postData));
-    if(post) {
+    if(post.length != 0) {
         console.log("POST!!!: ", post);
         // console.log("POST!!!: ", post[0].jwtToken);
         // const jwt = JSON.stringify(post[0].jwtToken);
         // localStorage.setItem('token', jwt);
     }
+
+    // await axios.post("http://localhost:3001/api/auth/login", postData)
+    //   .then(response => console.log("answer", response.data))
+    //   .catch(err => console.log(err)) 
 
   };
 
