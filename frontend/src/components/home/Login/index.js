@@ -1,29 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { login, updatePost } from "../../../actions/posts";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import {loginUser} from "../../../services/user"
+// import { login, updatePost } from "../../../actions/posts";
 
-export default function Login({ currentId, setCurrentId }) {
+export default function Login() {
+
   const dispatch = useDispatch();
   const post = useSelector((state) => state.posts);
   const [postData, setPostData] = useState({
     email: "",
     password: "",
   });
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(login(postData));
-    if(post.length != 0) {
-        console.log("POST!!!: ", post);
-        // console.log("POST!!!: ", post[0].jwtToken);
-        // const jwt = JSON.stringify(post[0].jwtToken);
-        // localStorage.setItem('token', jwt);
-    }
-
-    // await axios.post("http://localhost:3001/api/auth/login", postData)
-    //   .then(response => console.log("answer", response.data))
-    //   .catch(err => console.log(err)) 
-
+    // dispatch(login(postData));
+    // if(post.length != 0) {
+    //     console.log("POST!!!: ", post);
+    //     console.log("POST!!!: ", post[0].jwtToken);
+    //     const jwt = String(post[0].jwtToken);
+    //     localStorage.setItem('token', jwt);
+    // }
+    await loginUser(postData).then(response =>{  
+      const jwt = String(response.data.jwtToken);      
+      localStorage.setItem('token', jwt);
+    } );
   };
 
   return (
