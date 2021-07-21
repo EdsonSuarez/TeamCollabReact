@@ -60,7 +60,7 @@ export default function Login() {
               value={dataLogin.email}
               onChange={({ target: { value } }) =>
                 setDataLogin({ ...dataLogin, email: value })
-              }
+              }              
             />
           </div>
           <div className="row justify-content-center m-2">
