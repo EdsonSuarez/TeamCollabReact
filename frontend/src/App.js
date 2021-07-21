@@ -7,7 +7,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(projectGet());
-  }, []);
+  },[]);
 
   return (
     <Routes />

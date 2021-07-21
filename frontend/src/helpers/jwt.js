@@ -1,4 +1,4 @@
-const TOKEN_KEY = "TEAMCOLLAB_TOKEN";
+const TOKEN_KEY = "token";
 
 export function setToken(token) {
     localStorage.setItem(TOKEN_KEY, token);

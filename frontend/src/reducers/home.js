@@ -5,6 +5,7 @@ export default (homes = [], action) => {
     case LOGIN:
       return { data: action.payload };
     default:
+    default:
       return homes;
   }
 };
