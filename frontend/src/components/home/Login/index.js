@@ -1,61 +1,89 @@
-import React, { useState, useEffect } from "react";
-import { login, updatePost } from "../../../actions/posts";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import "./styles.css";
 
-export default function Login({ currentId, setCurrentId }) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../../actions/home";
+import { setToken } from "../../../helpers/jwt";
+import { useHistory } from "react-router-dom";
+
+const MessageError = ({ errorMessage }) => {
+  return (
+    <div
+      className="alert alert-danger d-flex align-items-center m-2"
+      role="alert"
+    >
+      {errorMessage}
+    </div>
+  );
+};
+
+export default function Login() {
+  const [error, setError] = useState();
+  const post = useSelector((state) => {
+    if (Object.keys(state.homes).length) handleHistory(state.homes.data);
+  });
   const dispatch = useDispatch();
-  const post = useSelector((state) => state.posts);
-  const [postData, setPostData] = useState({
+  let history = useHistory();
+  const [dataLogin, setDataLogin] = useState({
     email: "",
     password: "",
   });
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(login(postData));
-    if(post.length != 0) {
-        console.log("POST!!!: ", post);
-        // console.log("POST!!!: ", post[0].jwtToken);
-        // const jwt = JSON.stringify(post[0].jwtToken);
-        // localStorage.setItem('token', jwt);
-    }
+    dispatch(login(dataLogin));
+  };
 
-    // await axios.post("http://localhost:3001/api/auth/login", postData)
-    //   .then(response => console.log("answer", response.data))
-    //   .catch(err => console.log(err)) 
-
+  const handleHistory = (token) => {
+    setToken(token);
+    history.push("/project");
   };
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-
-      >
-        <input
-          type="text"
-          id="login"
-          className="fadeIn second"
-          name="email"
-          placeholder="User"
-          onChange={(e) => setPostData({ ...postData, email: e.target.value })}
-          value={postData.email}
-          required
-        />
-        <input
-          type="password"
-          id="password"
-          className="fadeIn third"
-          name="password"
-          placeholder="Password"
-          onChange={(e) =>
-            setPostData({ ...postData, password: e.target.value })
-          }
-          value={postData.password}
-          required
-        />
-        <button type="submit" className="btn btn-pink m-2">Log in</button>
-      </form>
-    </>
+    <div className="wrapper fadeInDown">
+      <div id="formContent">
+        <div className="fadeIn first">
+          <FontAwesomeIcon icon={faUser} className="iconHead" />
+        </div>
+        {error && <MessageError errorMessage={error} />}
+        <form onSubmit={handleSubmit}>
+          <div className="row justify-content-center m-2">
+            <input
+              type="text"
+              id="login"
+              className="fadeIn second"
+              name="email"
+              placeholder="Email"
+              required
+              value={dataLogin.email}
+              onChange={({ target: { value } }) =>
+                setDataLogin({ ...dataLogin, email: value })
+              }
+            />
+          </div>
+          <div className="row justify-content-center m-2">
+            <input
+              type="password"
+              id="password"
+              className="fadeIn third"
+              name="password"
+              placeholder="Password"
+              required
+              value={dataLogin.password}
+              onChange={({ target: { value } }) =>
+                setDataLogin({ ...dataLogin, password: value })
+              }
+            />
+          </div>
+          <button className="btn btn-pink m-2">Log in</button>
+        </form>
+        <div id="formFooter">
+          <p>¿Don't have an account?</p>
+          <button className="btn btn-pink m-2">Register</button>
+        </div>
+      </div>
+    </div>
   );
 }

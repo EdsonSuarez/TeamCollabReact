@@ -1,3 +1,6 @@
 import { combineReducers } from 'redux';
-import posts from './posts';
-export const reducers = combineReducers({ posts });
+
+import homes from './home';
+import projects from './project';
+
+export const reducers = combineReducers({ homes, projects });

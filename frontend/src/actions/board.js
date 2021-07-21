@@ -12,16 +12,14 @@ export const boardGet = () => async (dispatch) => {
 };
 
 export const login = (post) => async (dispatch) => {
-  console.log("POST", post);
   try {
     const { data } = await api.login(post);
     dispatch({ type: CREATE, payload: data });
-    console.log("DATA:", data);
   } catch (error) {
     console.log(error.message);
   }
-  
 };
+
 export const updatePost = (id, post) => async (dispatch) => {
   try {
     const { data } = await api.updatePost(id, post);
@@ -30,6 +28,7 @@ export const updatePost = (id, post) => async (dispatch) => {
     console.log(error.message);
   }
 };
+
 export const likePost = (id) => async (dispatch) => {
   try {
     const { data } = await api.likePost(id);
@@ -38,6 +37,7 @@ export const likePost = (id) => async (dispatch) => {
     console.log(error.message);
   }
 };
+
 export const deletePost = (id) => async (dispatch) => {
   try {
     await api.deletePost(id);
