@@ -1,17 +1,3 @@
-const axios = require('axios');
-const axiosApiInstance = axios.create();
+import axiosInstance from "../helpers/axios";
 
-// Request interceptor for API calls
-axiosApiInstance.interceptors.request.use(
-    async config => {        
-        config.headers = {
-            Authorization: 'Bearer '+ localStorage.getItem('token'),
-        }        
-        return config;
-    },
-    error => {
-        Promise.reject(error)
-    });
-
-
-export const getTeamAdmin = () => axiosApiInstance.get("http://localhost:3001/api/team/getAdmin");
+export const getTeamAdmin = () => axiosInstance.get("http://localhost:3001/api/team/getAdmin");
