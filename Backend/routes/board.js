@@ -32,7 +32,7 @@ router.post("/add", Auth, ScrumMaster, async (req, res) => {
   return res.status(200).send({ result });
 });
 
-router.get("/get/:name?",  async (req, res) => {
+router.get("/get/:name?", Auth, ScrumMaster, async (req, res) => {
   const board = await Board.find({ name: new RegExp(req.params["name"], "i") })
     .populate("teamId")
     .exec();

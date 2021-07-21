@@ -17,15 +17,15 @@ input[type="checkbox"] {
 
 .icon {
     position: absolute;
-    height: 40px;
-    width: 40px;
+    height: 4.2vh;
+    width: 2.2vw;
     line-height: 39px;
     right: 98%;
     top: 40%;
     border-radius: 3px;
     background: #fa897b;
-    color: white;
-    padding-left: 9px;
+    color: #ffffff;
+    padding-right: 1vh;
 }
 
 .menu {

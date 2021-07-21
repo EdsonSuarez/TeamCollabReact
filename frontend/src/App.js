@@ -1,16 +1,11 @@
-import Routes from "./routes";
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { projectGet } from './actions/project';
+import Header from  './components/home/Header'
+import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-router-dom'
 
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(projectGet());
-  },[]);
-
   return (
-    <Routes />
+    <Router >
+      <Header />
+    </Router>
   );
 }
 
