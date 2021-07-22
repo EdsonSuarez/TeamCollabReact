@@ -1,3 +1,4 @@
+import './styles.css';
 import { useEffect, useState } from "react";
 
 export default function ProjectBoxForm({
@@ -19,6 +20,16 @@ export default function ProjectBoxForm({
     date: "",
     active: "",
   });
+  const [message, setMessage] = useState(null);
+
+  const handleClickForm = () => {
+    if(dataForm.name === '' || dataForm.description === '') {
+      setMessage("missing fields to fill");
+    } else {
+      setMessage(null);
+      onProjectBoxFormSave(dataForm);
+    }
+  };
 
   useEffect(() => {
     setDataForm({
@@ -32,7 +43,7 @@ export default function ProjectBoxForm({
   }, [_id]);
 
   return (
-    <div className="card">
+    <div className="card cardProjectBoxForm">
       <div className="card-body">
         <h5 className="card-title">{title}</h5>
         <div className="row">
@@ -100,7 +111,7 @@ export default function ProjectBoxForm({
           <div className="col-lg-6">
             <button
               className="btn btn-info"
-              onClick={() => onProjectBoxFormSave(dataForm)}
+              onClick={() => handleClickForm()}
             >
               {_id === '' ? 'Save' : 'Update'}
             </button>
@@ -114,12 +125,18 @@ export default function ProjectBoxForm({
             </button>
           </div>
         </div>
-        <div className="row">
-          <div
-            className="alert alert-danger d-flex align-items-center m-2"
-            role="alert"
-          ></div>
-        </div>
+        { message &&
+          <div className="row">
+            <div className="col-lg-12">
+              <div
+                className="alert alert-danger d-flex justify-content-center m-2"
+                role="alert"
+              >
+                { message }
+              </div>
+            </div>
+          </div>
+        }
       </div>
     </div>
   );

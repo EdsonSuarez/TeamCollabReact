@@ -1,5 +1,9 @@
-.cardProject {
+.cardProjectBox {
     width: 100% !important;
+    height: auto !important;
+    padding: unset !important;
+    margin: unset !important;
+    background-color: unset !important;
 }
 
 .cardBorderUnset {
