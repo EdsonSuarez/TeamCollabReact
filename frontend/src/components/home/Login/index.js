@@ -38,7 +38,7 @@ export default function Login() {
 
   const handleHistory = (token) => {
     setToken(token);
-    history.push("/project");
+    history.push("/project");  
   };
 
   return (
