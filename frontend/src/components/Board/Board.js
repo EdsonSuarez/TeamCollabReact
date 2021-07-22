@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Team from "../Team/Team";
 import TeamAdd from "../Team/TeamAdd";
+import Sprint from "../Sprint/Sprint";
+import SprintAdd from "../Sprint/SprintAdd";
 import { useHistory } from "react-router-dom";
 import Task from "../Task/Task";
 import ModalDetailTask from "./modalDetailTask";
@@ -218,7 +220,7 @@ export default function Board() {
         <div className="menuLower">
           <div className="containerTitleMenu">
             <h3 className="titleMenu">Sprints</h3>
-            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" />  
+            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} data-bs-toggle="modal" data-bs-target="#modalAddSprint"className="iconHead iconos" />  
               : <span></span>}
           </div>
           <div className="buttonsMenu">
@@ -234,7 +236,7 @@ export default function Board() {
                 <div className="containerButton" >
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
-                  <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" /> 
+                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" /> 
                   <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" /> 
                 </div >           
               }  
@@ -372,15 +374,26 @@ export default function Board() {
     > <Team team={teamSelect}/>
     </div>
 
-    <div
+    <div id="modalAddTeam"
       className="modal fade"
-      id="modalAddTeam"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
       <TeamAdd/>
     </div>
     
+    <div id="modalSprint"
+      className="modal fade"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    ><Sprint/></div>
+
+    <div id="modalAddSprint"
+      className="modal fade"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    ><SprintAdd/></div>
+
     <div id="detaTask" className="modal fade" tabIndex="-1">
       <ModalDetailTask datos={dataModal}/>
     </div>

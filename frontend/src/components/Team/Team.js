@@ -3,18 +3,19 @@ import React, { useState, useEffect } from "react";
 import {getUsers, deleteDetail, addDetail} from '../../services/team';
 import {listUsersAll} from '../../services/user';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
-export default function Team({ currentId, setCurrentId, team}) {
+export default function Team({team}) {
+
     const [users, setUsers] = useState([]);   
     const [usersAll, setUsersAll] = useState([]);  
     const [userSelect, setUserSelect] = useState([]);  
+
     const listUsers = ()=>{
             try {
                 if(team._id){
                 getUsers(team._id).then(response=>{
                   setUsers(response.data.team);
-                  console.log(response.data.team);
               });
             }
             } catch (error) {}
@@ -24,7 +25,6 @@ export default function Team({ currentId, setCurrentId, team}) {
     const listUsersAllF = () => {
       listUsersAll().then(response => {
         setUsersAll(response.data.user)
-          console.log(response.data.user)
       });
     }
     const userDelete = (user) => {
@@ -33,21 +33,23 @@ export default function Team({ currentId, setCurrentId, team}) {
                 setUsers(users.filter( user1 => user1 !== user))
               });
         }
-        
     }
 
     const userAdd = () => {
       let user = userSelect;
-      user = user.split(",")
-      let data = { userId:user[0], teamId: team._id};
-      addDetail(data).then(response =>{
-        user = {_id: response.data.result._id, userId: {fullName: user[1], roleId: {name: user[2]}, _id: user[0]}}
-        users.push(user)
-        setUsers(users)
-        console.log(response.data);
-        
-      })
-      listUsersAllF()
+      console.log(userSelect);
+      try {
+      if(user){
+        user = user.split(",")
+        let data = { userId:user[0], teamId: team._id};
+        addDetail(data).then(response =>{
+          user = {_id: response.data.result._id, userId: {fullName: user[1], roleId: {name: user[2]}, _id: user[0]}}
+          users.push(user)
+          setUsers(users)        
+        })
+        listUsersAllF()
+      }
+    } catch {}
     }
 
     useEffect(()=> listUsers(),[team] )
@@ -76,7 +78,7 @@ export default function Team({ currentId, setCurrentId, team}) {
             </tr>
           </thead>
           <tbody>
-          {users.map((user, index) =>(
+          {users.length > 0 && (users.map((user, index) =>(
             <tr key={Math.random()}>
               <th scope="row">{index+1}</th>
               <td>{user.userId.fullName}</td>
@@ -89,7 +91,7 @@ export default function Team({ currentId, setCurrentId, team}) {
                   <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" />      
               </button></td>
             </tr>
-          ))}
+          )))}
             
           </tbody>
           </table>
