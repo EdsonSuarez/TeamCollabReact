@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import { saveTask, saveTaskImg,  editTask, deleteTask, getTasks, getOneTask, updateTask, getTeam, addDetail, getUsersTask, deleteDetail, getManyTask } from "../../services/task";
-// import Task from './components/Task/Task';
-{/* <Task></Task> */}
+
+
 
 export default function Task() {
 
