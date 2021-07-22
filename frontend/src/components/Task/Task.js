@@ -46,7 +46,7 @@ export default function Task() {
     setTaskData({
       ...taskData,
       boardId: localStorage.getItem("sprint"),
-      priority: "Priority",
+      // priority: "Priority",
     });
 
     setTaskId(localStorage.getItem("task"));

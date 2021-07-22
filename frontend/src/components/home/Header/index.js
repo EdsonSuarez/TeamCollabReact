@@ -54,7 +54,7 @@ export default function Header() {
                     </div>
                     <div className="d-flex">                    
                         <button className="btn btn-outline-success" style={{color:"black"}}>Register</button>
-                        <button className="btn btn-outline-success" style={{color:"black"}} onClick={logoutFun}>Logout</button>
+                        {/* <button className="btn btn-outline-success" style={{color:"black"}} onClick={logoutFun}>Logout</button> */}
                         <button className="btn btn-outline-success" ><Link to="/login" style={{textDecoration:"none", color:"black"}}>Login</Link></button>                        
                     </div>
                 </div>
