@@ -15,17 +15,23 @@ input[type="checkbox"] {
     opacity: 0;
 }
 
+.iconos{
+    height: 2.2vh;
+    width: 2.2vw;
+}
+
 .icon {
     position: absolute;
     height: 4.2vh;
-    width: 2.2vw;
+    width: 4.2vw;
     line-height: 39px;
     right: 98%;
     top: 40%;
     border-radius: 3px;
     background: #fa897b;
     color: #ffffff;
-    padding-right: 1vh;
+    padding-left: 0.5vh;
+    padding-right: 0.5vh;    
 }
 
 .menu {
@@ -145,7 +151,7 @@ input[type="checkbox"]:checked {
     min-width: 240px;
     width: 70%;
     padding: 2.5vh;
-    margin: 2.5vh auto;
+    margin: 2.5vh auto;    
 }
 
 .lowPriority {

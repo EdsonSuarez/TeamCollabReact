@@ -4,16 +4,17 @@ import Login from '../Login';
 import Board from '../../Board/Board';
 import Home from '../Home';
 import ListRole from "../../Admin/List-role/ListRole";
+import Project from '../../Project';
 import {logout} from '../../../services/auth';
 import ListUser from "../../Admin/List-user/ListUser";
 
 
 export default function Header() {
-    const history = useHistory();
+    let history = useHistory();
 
     const logoutFun =()=>{
         logout()
-        history.push("/login");            
+        // history.push("/login");            
     }    
 
     return (
@@ -68,6 +69,9 @@ export default function Header() {
             </Route>
             <Route path="/board">
                 <Board />
+            </Route>
+            <Route path="/project">
+                <Project />
             </Route>
             <Route path="/">
                 <Home />

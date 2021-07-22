@@ -1,5 +1,5 @@
 import { LOGIN } from '../constants/actionTypes';
-import * as api from '../api/index.js';
+import * as api from '../services/user';
 
 export const login = (post) => async (dispatch) => {
   try {
