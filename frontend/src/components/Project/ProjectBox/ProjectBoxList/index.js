@@ -1,11 +1,29 @@
-import './styles.css';
+import "./styles.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+
 export default function ProjectBoxList({
+  _id,
   name,
   description,
   status,
   date,
   active,
+  onProjectBoxListEdit,
+  onProjectBoxListDelete,
 }) {
+  const createData = (_id, name, description, status, date, active) => {
+    const objForm = {
+      _id: _id,
+      name: name,
+      description: description,
+      status: status,
+      date: date,
+      active: active,
+    };
+    onProjectBoxListDelete(objForm);
+  };
+
   return (
     <div className="card m-2" style={{ width: "18rem" }}>
       <div className="card-header">{name}</div>
@@ -27,6 +45,24 @@ export default function ProjectBoxList({
             </span>
           </h5>
         </div>
+        <button
+          className="btn btn-warning btn-xs m-1"
+          title="Editar proyecto"
+          onClick={() =>
+            onProjectBoxListEdit(_id, name, description, status, date, active)
+          }
+        >
+          <FontAwesomeIcon icon={faEdit} />
+        </button>
+        <button
+          className="btn btn-danger btn-xs m-1"
+          title="Borrar proyecto"
+          onClick={() =>
+            createData(_id, name, description, status, date, active)
+          }
+        >
+          <FontAwesomeIcon icon={faTrash} />
+        </button>
       </div>
     </div>
   );
