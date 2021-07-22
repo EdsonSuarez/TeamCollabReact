@@ -1,9 +1,15 @@
 import React from "react";
 import './style.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 export default function ModalDetailTask({datos}) {   
     
     // console.log("datos", datos)
+
+    const getTask = () => {
+        document.getElementById('task-window')?.click();
+    }
 
     return (
     <div className="modal-dialog">
@@ -32,8 +38,16 @@ export default function ModalDetailTask({datos}) {
 
                 
             </div>
-            <div className="modal-footer">                
-                
+            <div className="modal-footer">   
+
+                <button
+                    type="button"
+                    class="btn btn-warning btn-xs m-1"
+                    onClick={getTask}
+                    data-bs-dismiss="modal"
+                    >
+                    <FontAwesomeIcon icon={faPencilAlt}/>
+                </button>
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"> Close  </button>
             </div>
         </div>
