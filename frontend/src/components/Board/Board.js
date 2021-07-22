@@ -160,7 +160,7 @@ export default function Board() {
   const datosModal = (id) => { 
     localStorage.setItem('task', id );
     getOneTask(id).then(response =>{
-      console.log("task",response.data.userTask)
+      // console.log("task",response.data.userTask)
       const datos = response.data.userTask;
       setdataModal(datos)  
     })
@@ -269,9 +269,9 @@ export default function Board() {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
-                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
+                    <button className="btn botonCard btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
+                    <button className="btn botonCard btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn botonCard btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
                   </div>
                 </div>
               </div>
@@ -295,9 +295,9 @@ export default function Board() {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
-                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
+                    <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn botonCard btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn botonCard btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
                   </div>
                 </div>
               </div>
@@ -320,9 +320,9 @@ export default function Board() {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
-                    <button className="btn btn-success btn-sx textSize"onClick={()=> updateTasks(task, "doing")} > Doing </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing  </button>
+                    <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn botonCard btn-warning btn-sx textSize"onClick={()=> updateTasks(task, "doing")} > Doing </button>
+                    <button className="btn botonCard btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing  </button>
                   </div>
                 </div>
               </div>
@@ -345,9 +345,9 @@ export default function Board() {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                  <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
-                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn botonCard btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
+                    <button className="btn botonCard btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
                   </div>
                 </div>
               </div>
