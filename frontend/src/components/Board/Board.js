@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import './style.css';
 import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
 import {getTeamAdmin} from '../../services/team';
-import {updateTask} from '../../services/task';
+import {updateTask, getOneTask} from '../../services/task';
 import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from "react-router-dom";
 import Task from "../Task/Task";
+import ModalDetailTask from "./modalDetailTask";
 
 export default function Board() {
 
@@ -17,8 +18,8 @@ export default function Board() {
   const [taskToDo, setTaskToDo] = useState([]);   
   const [taskDoing, setTaskDoing] = useState([]);   
   const [taskTesting, setTaskTesting] = useState([]);   
-  const [taskDone, setTaskDone] = useState([]);    
-  let history = useHistory();
+  const [taskDone, setTaskDone] = useState([]);      
+  const [dataModal, setdataModal] = useState([]);      
   
   const cambio = ()=>{
     setToggle(!toggle)    
@@ -148,6 +149,15 @@ export default function Board() {
     })
   }
 
+  const datosModal = (id) => { 
+    localStorage.setItem('task', id );
+    getOneTask(id).then(response =>{
+      console.log("task",response.data.userTask)
+      const datos = response.data.userTask;
+      setdataModal(datos)  
+    })
+  }
+
   function getRandom() {
     return Math.random();
   }
@@ -157,7 +167,7 @@ export default function Board() {
 
   return (
     <>
-    <Task></Task>
+    {/* <Task></Task> */}
     <input type="checkbox" checkbox="checkbox" onChange={cambio}/>
     <div className="menu">
     {toggle ? <FontAwesomeIcon icon={faAngleLeft} className="iconHead icon" /> :
@@ -240,7 +250,7 @@ export default function Board() {
             <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}} >  
                         
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
@@ -266,7 +276,7 @@ export default function Board() {
           <div key={getRandom()} >
             <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
@@ -291,7 +301,7 @@ export default function Board() {
           <div key={getRandom()} >
             <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
@@ -316,7 +326,7 @@ export default function Board() {
           <div key={getRandom()} >
             <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
@@ -337,6 +347,12 @@ export default function Board() {
         <h3 className="titleSections"></h3>        
 
     </div>
+    </div>
+
+    {/*     MODALES     */}
+    
+    <div id="detaTask" className="modal fade" tabIndex="-1">
+      <ModalDetailTask datos={dataModal}/>
     </div>
 
     </>
