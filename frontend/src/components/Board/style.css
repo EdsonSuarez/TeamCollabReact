@@ -374,3 +374,7 @@ mat-icon {
 .botonCard{    
     margin: 0;
 }
+
+.card-title{
+    cursor: pointer;
+}
