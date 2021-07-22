@@ -83,6 +83,10 @@ button {
 }
 .spacer {
     flex: 1 0 auto;
-  }
+}
+.alertaTask {
+    width: 90%;
+    margin-top: 10px;
+}
 
   
