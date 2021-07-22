@@ -1,0 +1,16 @@
+.cardBorderUnset {
+    border: unset;
+}
+
+.projectTitle {
+    font-size: 35px;
+    font-weight: bold;
+    color: #FA897B;
+    padding: 10px;
+    border-bottom: none;
+    height: 60px;
+}
+
+.projectButton {
+    margin-top: -130px;
+}

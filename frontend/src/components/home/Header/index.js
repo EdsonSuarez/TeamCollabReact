@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-
 import Login from '../Login';
 import Board from '../../Board/Board';
 import Home from '../Home';
+import Project from '../../Project';
 import {logout} from '../../../services/auth';
 
 
@@ -54,6 +55,9 @@ export default function Header() {
             </Route>
             <Route path="/board">
                 <Board />
+            </Route>
+            <Route path="/project">
+                <Project />
             </Route>
             <Route path="/">
                 <Home />
