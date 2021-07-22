@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
 import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
-import {getTeamAdmin} from '../../services/team';
+import {getTeamAdmin, addTeam, deleteTeam} from '../../services/team';
 import {updateTask} from '../../services/task';
 import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Team from "../Team/Team";
+import TeamAdd from "../Team/TeamAdd";
 import { useHistory } from "react-router-dom";
 
 export default function Board() {
@@ -119,7 +120,7 @@ export default function Board() {
     //console.log(teamSelect);
   }
 
-  const deleteTeam = (team) => {
+  const deleteTeamF = (team) => {
     console.log(team);
   }
   return (
@@ -133,7 +134,7 @@ export default function Board() {
         <div className="menuUpper">
           <div className="containerTitleMenu">
             <h3 className="titleMenu">Teams/Proyect</h3>          
-            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" />  
+            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalAddTeam" />  
             : <span></span>}
           </div>
           <div className="buttonsMenu">
@@ -150,7 +151,7 @@ export default function Board() {
                   <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} </div>
                   <span className="spacer"></span>                  
                   <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalTeam" onClick={() => modalTeamOpen(team)}/> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> deleteTeam(team)}/>       
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> deleteTeamF(team)}/>       
                 </div >           
               }  
             </div>
@@ -314,6 +315,15 @@ export default function Board() {
     > <Team team={teamSelect}/>
     </div>
 
+    <div
+      class="modal fade"
+      id="modalAddTeam"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <TeamAdd/>
+    </div>
     </>
   );
 }
