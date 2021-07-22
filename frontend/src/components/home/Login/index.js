@@ -1,5 +1,6 @@
 import "./styles.css";
 
+import { LOGIN } from '../../../constants/actionTypes';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -21,8 +22,8 @@ const MessageError = ({ errorMessage }) => {
 
 export default function Login() {
   const [error, setError] = useState();
-  const post = useSelector((state) => {
-    if (Object.keys(state.homes).length) handleHistory(state.homes.data);
+  useSelector(({ homes: { constant, data } }) => {
+    if(constant && constant === LOGIN) handleHistory(data);
   });
   const dispatch = useDispatch();
   let history = useHistory();
@@ -38,7 +39,7 @@ export default function Login() {
 
   const handleHistory = (token) => {
     setToken(token);
-    history.push("/project");
+    history.push("/project");  
   };
 
   return (
@@ -53,7 +54,7 @@ export default function Login() {
             <input
               type="text"
               id="login"
-              className="fadeIn second"
+              className="fadeIn second loginInput"
               name="email"
               placeholder="Email"
               required
@@ -67,7 +68,7 @@ export default function Login() {
             <input
               type="password"
               id="password"
-              className="fadeIn third"
+              className="fadeIn third loginInput"
               name="password"
               placeholder="Password"
               required

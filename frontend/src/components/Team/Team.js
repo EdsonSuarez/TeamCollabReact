@@ -1,6 +1,6 @@
 import './style.css';
 import React, { useState, useEffect } from "react";
-import {getUsers, deleteDetail} from '../../services/team';
+import {getUsers, deleteDetail, addDetail} from '../../services/team';
 import {listUsersAll} from '../../services/user';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,7 @@ import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "
 export default function Team({ currentId, setCurrentId, team}) {
     const [users, setUsers] = useState([]);   
     const [usersAll, setUsersAll] = useState([]);  
+    const [userSelect, setUserSelect] = useState([]);  
     const listUsers = ()=>{
             try {
                 if(team._id){
@@ -23,26 +24,36 @@ export default function Team({ currentId, setCurrentId, team}) {
     const listUsersAllF = () => {
       listUsersAll().then(response => {
         setUsersAll(response.data.user)
-        console.log(response.data.user)
+          console.log(response.data.user)
       });
     }
     const userDelete = (user) => {
         if(user){
             deleteDetail(user._id).then(response=>{
-                //console.log(response.data);
-                //let i = users.indexOf( user );
-                //setUsers(users.splice( i, 1 ))
                 setUsers(users.filter( user1 => user1 !== user))
               });
         }
         
     }
 
+    const userAdd = () => {
+      let user = userSelect;
+      user = user.split(",")
+      let data = { userId:user[0], teamId: team._id};
+      addDetail(data).then(response =>{
+        user = {_id: response.data.result._id, userId: {fullName: user[1], roleId: {name: user[2]}, _id: user[0]}}
+        users.push(user)
+        setUsers(users)
+        console.log(response.data);
+        
+      })
+      listUsersAllF()
+    }
 
     useEffect(()=> listUsers(),[team] )
 
     return (
-
+    
     <div className="modal-dialog modal-dialog-centered">
       <div className="modal-content">
         <div className="modal-header">
@@ -83,26 +94,38 @@ export default function Team({ currentId, setCurrentId, team}) {
           </tbody>
           </table>
         </div>
-  
         <div className="displayFlex modal-body " style={{ justifyContent : "space-evenly"}}>
-          <select
-            className="form-select ancho"
-            aria-label="Default select example"
-          >
-            <option >
-            </option>
-          </select>
-          {usersAll && (          <button
+          {usersAll.length > 0 && (
+            <>
+            <select
+              className="form-select ancho"
+              aria-label="Default select example"
+              onChange = {(event) => setUserSelect(event.target.value)}
+              value = {userSelect} 
+            >
+            {usersAll.map((user, index) =>(
+               <option key={Math.random()} value= {[user._id, user.fullName,  user.roleId.name].toString()}>
+                 {user.fullName}
+               </option>
+            ))}
+             
+            </select>
+           <button type="button" className="btn btn-success btn-sm" onClick={() => userAdd()}>
+           Add User
+         </button>
+            </>
+          )}
+
+          {usersAll.length == 0 && (          
+          <button
             type="button"
             className="btn btn-success btn-sm"
             onClick={() => listUsersAllF()}
           >
             <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" /> 
-          </button>)}
-
-          <button type="button"  className="btn btn-success btn-sm">
-            Add User
           </button>
+          )}
+
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">

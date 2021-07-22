@@ -1,10 +1,9 @@
 import Header from  './components/home/Header'
 import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-router-dom'
 
-function App() { 
-
+function App() {
   return (
-    <Router >
+    <Router>
       <Header />
     </Router>
   );
