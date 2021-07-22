@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { fetchProjects } from "../../services/project";
-import { isAdmin } from "../../services/auth";
+import { fetchAdmin, fetchScrum, fetchUserLeader } from "../../services/project";
+import { isAdmin, isScrumMaster, isUserLeader } from "../../services/auth";
 import { saveProject, updateProject, deleteProject } from "../../services/project";
 
 import ProjectBox from "./ProjectBox";
@@ -22,17 +22,41 @@ export default function Project() {
   const [message, setMessage] = useState();
 
   const inicio = () => {
-    if (isAdmin()) {
-      fetchProjects().then(({ data: { projects } }) => {
-        setShowForm(objForm);
-        setProjects(projects);
-        setProjectsSearch(projects);
-      });
+    if (isAdmin()) listAdmin();
+    if(isScrumMaster()) listScrum();
+    if(isUserLeader()) listUserLeader();
+    if(localStorage.getItem('sprint') && localStorage.getItem('team')) {
+      localStorage.removeItem('team');
+      localStorage.removeItem('sprint');
     }
   };
 
+  const listAdmin = () => {
+    fetchAdmin().then(({ data: { projects } }) => {
+      setShowForm(objForm);
+      setProjects(projects);
+      setProjectsSearch(projects);
+    });
+  }
+
+  const listScrum = () => {
+    fetchScrum().then(({ data: { projects } }) => {
+      setShowForm(objForm);
+      setProjects(projects);
+      setProjectsSearch(projects);
+    });
+  }
+
+  const listUserLeader = () => {
+    fetchUserLeader().then(({ data: { projects } }) => {
+      setShowForm(objForm);
+      setProjects(projects);
+      setProjectsSearch(projects);
+    });
+  }
+
   const handleProjectBoxFormSave = (dataSave) => {
-    if(dataSave.id === '') {
+    if(dataSave._id === '') {
       saveProject(dataSave).then(({ data: { result } }) => {
         setShowForm(objForm);
         setProjects([...projects, result]);
@@ -65,6 +89,7 @@ export default function Project() {
     objForm.date = date;
     objForm.active = active;
     setShowForm(objForm);
+    window.scrollTo(0, 0);
   };
 
   const handleProjectBoxListDelete = (dataDelete) => {

@@ -56,3 +56,7 @@ export const isUser =() =>{
         return decodedJwtData.roleId.name !== 'user' ? false : true;
     }
 }
+
+export const loggedIn=()=> {
+    return !!localStorage.getItem('token');
+}
