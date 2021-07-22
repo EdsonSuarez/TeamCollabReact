@@ -5,7 +5,7 @@ import {getTeamAdmin} from '../../services/team';
 import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-
+import Team from "../Team/Team";
 export default function Board({ currentId, setCurrentId }) {
 
   const [toggle, setToggle] = useState(false);
@@ -15,7 +15,7 @@ export default function Board({ currentId, setCurrentId }) {
   const [taskDoing, setTaskDoing] = useState([]);   
   const [taskTesting, setTaskTesting] = useState([]);   
   const [taskDone, setTaskDone] = useState([]);   
-  
+  const [teamSelect, setTeamSelect] = useState([]);
   const cambio = ()=>{
     setToggle(!toggle)    
   };
@@ -24,6 +24,7 @@ export default function Board({ currentId, setCurrentId }) {
     if(isAdmin()){  
       getTeamAdmin().then(response =>{  
         setTeamProject(response.data.team);
+        setTeamSelect(response.data.team[0]);
         const datos = response.data.team;
         changeTeam(datos[0]);
         // console.log("datos",datos);
@@ -36,6 +37,7 @@ export default function Board({ currentId, setCurrentId }) {
 
   const changeTeam = (team)=>{
     if(team){
+      setTeamSelect(team);
       boardsUser(team._id).then(response=>{
         setsprints(response.data.boards)
         const datos = response.data.boards
@@ -87,8 +89,14 @@ export default function Board({ currentId, setCurrentId }) {
   
   useEffect(()=> inicio(),[] )
 
+  const modalTeamOpen = (team) =>{
+    setTeamSelect(team);
+    //console.log(teamSelect);
+  }
+
   return (
     <>
+    
     <input type="checkbox" checkbox="checkbox" onChange={cambio}/>
     <div className="menu">
     {toggle ? <FontAwesomeIcon icon={faAngleLeft} className="iconHead icon" /> :
@@ -107,14 +115,14 @@ export default function Board({ currentId, setCurrentId }) {
               {!isScrumMaster() && !isAdmin() 
                 ?
                 <div className="containerButton" >
-                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.name}</div>
+                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name}</div>
                 </div>
                 :
                 <div className="containerButton" >
-                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.name} </div>
+                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} </div>
                   <span className="spacer"></span>                  
-                  <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" /> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" />      
+                  <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalTeam" onClick={() => modalTeamOpen(team)}/> 
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> modalTeamOpen(team)}/>       
                 </div >           
               }  
             </div>
@@ -267,6 +275,16 @@ export default function Board({ currentId, setCurrentId }) {
         <h3 className="titleSections"></h3>        
 
     </div>
+    </div>
+
+        {/* ---------------- MODALS ------------------*/}
+
+
+    <div id="modalTeam"
+      className="modal fade"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    > <Team team={teamSelect}/>
     </div>
 
     </>
