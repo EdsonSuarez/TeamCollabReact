@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-
 
 function App() {
   return (
-    <Router >
+    <Router>
       <Header />
     </Router>
   );
