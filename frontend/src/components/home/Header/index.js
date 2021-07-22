@@ -8,11 +8,11 @@ import {logout} from '../../../services/auth';
 
 
 export default function Header() {
-    const history = useHistory();
+    let history = useHistory();
 
     const logoutFun =()=>{
         logout()
-        history.push("/login");            
+        // history.push("/login");            
     }    
 
     return (

@@ -1,4 +1,4 @@
-const axios = require('axios');
+// const axios = require('axios');
 // import axiosInstance from "../helpers/axios";
 
 export const logout= () => {    

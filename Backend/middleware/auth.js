@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 
 const auth = (req, res, next)=>{
-    
     let token = req.header("authorization");
     if(!token) return res.status(401).send("Process Failed: the token doesn't exist ")
 

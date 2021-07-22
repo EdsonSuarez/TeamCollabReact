@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
-import {boardsUser, tasksBoard} from '../../services/board';
+import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
 import {getTeamAdmin} from '../../services/team';
+import {updateTask} from '../../services/task';
 import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { useHistory } from "react-router-dom";
 
-export default function Board({ currentId, setCurrentId }) {
+export default function Board() {
 
   const [toggle, setToggle] = useState(false);
   const [teamProject, setTeamProject] = useState([]);   
@@ -15,6 +17,7 @@ export default function Board({ currentId, setCurrentId }) {
   const [taskDoing, setTaskDoing] = useState([]);   
   const [taskTesting, setTaskTesting] = useState([]);   
   const [taskDone, setTaskDone] = useState([]);   
+  let history = useHistory();
   
   const cambio = ()=>{
     setToggle(!toggle)    
@@ -30,13 +33,24 @@ export default function Board({ currentId, setCurrentId }) {
       })
       
     }else{
-      
+      teamsUser().then(response =>{
+        const datos = response.data.teamsUser;
+        console.log("datos user", datos)
+        const result = []
+        datos.forEach(element =>{
+          result.push(element.teamId)  
+        })
+        // console.log("datos2", result)
+        setTeamProject(result);
+        changeTeam(result[0]);
+      })
     }
   };
 
   const changeTeam = (team)=>{
     if(team){
       boardsUser(team._id).then(response=>{
+        localStorage.setItem('team', team._id);
         setsprints(response.data.boards)
         const datos = response.data.boards
         changeSprint(datos[0]);
@@ -48,7 +62,8 @@ export default function Board({ currentId, setCurrentId }) {
 
   const changeSprint = (sprint)=>{
     if(sprint){
-      tasksBoard(sprint._id).then(response=>{  
+      tasksBoard(sprint._id).then(response=>{ 
+        localStorage.setItem('sprint', sprint._id); 
         let taskToDo = []
         let taskDoing = []
         let taskTesting = []
@@ -81,6 +96,14 @@ export default function Board({ currentId, setCurrentId }) {
     }
   }
 
+  const updateTasks = (task, status) => {
+    
+    task.status = status;
+    updateTask(task).then(response =>{
+      history.push("/board");  
+    })
+  }
+
   function getRandom() {
     return Math.random();
   }
@@ -107,11 +130,11 @@ export default function Board({ currentId, setCurrentId }) {
               {!isScrumMaster() && !isAdmin() 
                 ?
                 <div className="containerButton" >
-                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.name}</div>
+                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name}</div>
                 </div>
                 :
                 <div className="containerButton" >
-                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.name} </div>
+                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} </div>
                   <span className="spacer"></span>                  
                   <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" /> 
                   <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" />      
@@ -135,11 +158,11 @@ export default function Board({ currentId, setCurrentId }) {
               {!isScrumMaster() && !isAdmin() 
                 ?
                 <div className="containerButton" >
-                  <div className="change" > {sprint.name}</div>
+                  <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                 </div>
                 :
                 <div className="containerButton" >
-                  <div className="change" > {sprint.name}</div>
+                  <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
                   <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" /> 
                   <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" /> 
@@ -174,9 +197,9 @@ export default function Board({ currentId, setCurrentId }) {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" > Doing </button>
-                    <button className="btn btn-success btn-sx textSize" > Done  </button>
-                    <button className="btn btn-light btn-sx textSize" > Testing </button>
+                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
+                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
                   </div>
                 </div>
               </div>
@@ -200,9 +223,9 @@ export default function Board({ currentId, setCurrentId }) {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" > To-do </button>
-                    <button className="btn btn-success btn-sx textSize" > Done  </button>
-                    <button className="btn btn-light btn-sx textSize" > Testing </button>
+                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
                   </div>
                 </div>
               </div>
@@ -216,8 +239,8 @@ export default function Board({ currentId, setCurrentId }) {
     <div className="containerDone">
       <h3 className="titleSections">Done</h3>
       <div className="container" >      
-
-      {taskTesting.map(task =>(
+      
+      {taskDone.map(task =>(
           <div key={getRandom()} >
             <div className="card" style={{width: 150}}>              
               <div className="card-body">
@@ -225,9 +248,9 @@ export default function Board({ currentId, setCurrentId }) {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" > To-do </button>
-                    <button className="btn btn-success btn-sx textSize" > Doing </button>
-                    <button className="btn btn-light btn-sx textSize" > Done  </button>
+                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn btn-success btn-sx textSize"onClick={()=> updateTasks(task, "doing")} > Doing </button>
+                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
                   </div>
                 </div>
               </div>
@@ -242,7 +265,7 @@ export default function Board({ currentId, setCurrentId }) {
       <h3 className="titleSections">Testing</h3>
       <div className="container">
 
-      {taskDone.map(task =>(
+      {taskTesting.map(task =>(
           <div key={getRandom()} >
             <div className="card" style={{width: 150}}>              
               <div className="card-body">
@@ -250,9 +273,9 @@ export default function Board({ currentId, setCurrentId }) {
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                  <button className="btn btn-warning btn-sx textSize" > To-do </button>
-                    <button className="btn btn-success btn-sx textSize" > Doing </button>
-                    <button className="btn btn-light btn-sx textSize" > Testing  </button>
+                  <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
+                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing  </button>
                   </div>
                 </div>
               </div>
