@@ -9,6 +9,7 @@ import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "
 import Team from "../Team/Team";
 import TeamAdd from "../Team/TeamAdd";
 import { useHistory } from "react-router-dom";
+import Task from "../Task/Task";
 
 export default function Board() {
 
@@ -27,6 +28,7 @@ export default function Board() {
   };
 
   const inicio = ()=>{
+    console.log("se ejecuta")
     if(isAdmin()){  
       getTeamAdmin().then(response =>{  
         setTeamProject(response.data.team);
@@ -68,44 +70,86 @@ export default function Board() {
   const changeSprint = (sprint)=>{
     if(sprint){
       tasksBoard(sprint._id).then(response=>{ 
-        localStorage.setItem('sprint', sprint._id); 
-        let taskToDo = []
-        let taskDoing = []
-        let taskTesting = []
-        let taskDone = []
+        localStorage.setItem('sprint', sprint._id);  
         const data = response.data.tasks;
+        let taskToDoObj = [];
+        let taskDoingObj = [];
+        let taskTestingObj = [];
+        let taskDoneObj = [];
         data.forEach(task => {
           switch (task.status) {
             case 'to-do':
-              taskToDo.push(task);
+              taskToDoObj.push(task);
               break;
             case 'doing':
-              taskDoing.push(task);
+              taskDoingObj.push(task);
               break;
             case 'testing':
-              taskTesting.push(task);
+              taskTestingObj.push(task);
               break;
             case 'done':
-              taskDone.push(task);
+              taskDoneObj.push(task);
               break;
             default:
               break;
           }
         });
-        setTaskToDo(taskToDo);
-        setTaskDoing(taskDoing);
-        setTaskTesting(taskTesting);
-        setTaskDone(taskDone);
+        setTaskToDo(taskToDoObj);
+        setTaskDoing(taskDoingObj);
+        setTaskTesting(taskTestingObj);
+        setTaskDone(taskDoneObj);
       })
 
     }
   }
 
-  const updateTasks = (task, status) => {
-    
-    task.status = status;
+  const updateTasks = (task, stado) => {    
+    task.status = stado;  
     updateTask(task).then(response =>{
-      history.push("/board");  
+      const anterior = response.data.task;
+      switch (anterior.status) {
+        case 'to-do':      
+          console.log("todo", taskToDo)
+          const index = taskToDo.indexOf(anterior);
+          taskToDo.splice(index, 1);    
+          console.log("todo", taskToDo)
+          setTaskToDo(taskToDo=>[...taskToDo]);
+          break;
+        case 'doing':          
+          const index2 = taskDoing.indexOf(anterior);
+          taskDoing.splice(index2, 1);
+          setTaskDoing(taskDoing=>[...taskDoing]);
+          break;
+        case 'testing':          
+          const index3 = taskTesting.indexOf(anterior);
+          taskTesting.splice(index3, 1);
+          setTaskTesting(taskTesting=>[...taskTesting]);
+          break;
+        case 'done':
+          const index4 = taskDone.indexOf(anterior);
+          taskDone.splice(index4, 1);
+          setTaskDone(taskDone=>[...taskDone]);
+          break;
+        default:
+          break;
+      }
+
+      switch (task.status) {
+        case 'to-do':                       
+          setTaskToDo(taskToDo=>[...taskToDo, task]);
+          break;
+        case 'doing':    
+          setTaskDoing(taskDoing=>[...taskDoing, task]);
+          break;
+        case 'testing':
+          setTaskTesting(taskTesting=>[...taskTesting, task]);
+          break;
+        case 'done':    
+          setTaskDone(taskDone=>[...taskDone, task]);
+          break;
+        default:
+          break;
+      }
     })
   }
 
@@ -114,6 +158,7 @@ export default function Board() {
   }
   
   useEffect(()=> inicio(),[] )
+  
 
   const modalTeamOpen = (team) =>{
     setTeamSelect(team);
@@ -126,6 +171,7 @@ export default function Board() {
   return (
     <>
     
+    <Task></Task>
     <input type="checkbox" checkbox="checkbox" onChange={cambio}/>
     <div className="menu">
     {toggle ? <FontAwesomeIcon icon={faAngleLeft} className="iconHead icon" /> :
@@ -205,7 +251,8 @@ export default function Board() {
 
         {taskToDo.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={{width: 150}}>              
+            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}} >  
+                        
               <div className="card-body">
                 <h5 className="card-title">{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
@@ -231,7 +278,7 @@ export default function Board() {
 
       {taskDoing.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={{width: 150}}>              
+            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title">{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
@@ -256,7 +303,7 @@ export default function Board() {
       
       {taskDone.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={{width: 150}}>              
+            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title">{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
@@ -264,7 +311,7 @@ export default function Board() {
                   <div className="btn-group" role="group">
                     <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
                     <button className="btn btn-success btn-sx textSize"onClick={()=> updateTasks(task, "doing")} > Doing </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing  </button>
                   </div>
                 </div>
               </div>
@@ -281,7 +328,7 @@ export default function Board() {
 
       {taskTesting.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={{width: 150}}>              
+            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title">{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
@@ -289,7 +336,7 @@ export default function Board() {
                   <div className="btn-group" role="group">
                   <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
                     <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing  </button>
+                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
                   </div>
                 </div>
               </div>
@@ -316,9 +363,8 @@ export default function Board() {
     </div>
 
     <div
-      class="modal fade"
+      className="modal fade"
       id="modalAddTeam"
-      tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >

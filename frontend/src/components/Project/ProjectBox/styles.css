@@ -1,3 +1,7 @@
+.cardProject {
+    width: 100% !important;
+}
+
 .cardBorderUnset {
     border: unset;
 }

@@ -1,0 +1,63 @@
+.spacer {
+    flex: 1 0 auto;
+  }
+
+.container {
+    padding-top: 0px;
+}
+
+.card {
+    width: 280px;
+    height: 200px;
+    padding: 30px;
+    margin: 30px;
+    background-color: rgb(70, 156, 156);
+}
+
+.text_center {
+    display: flex;
+    justify-content: center;
+}
+
+.tarjetas {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.card-header{
+    box-sizing: border-box;
+}
+
+.card-body {
+    padding-top: 15px;
+    font-size: 1rem;
+}
+
+.actionsContainer {
+    width: 80%;
+    position: absolute;
+    bottom: 0;
+}
+
+.actions {
+    display: flex; 
+}
+
+.active {
+    color: green;
+}
+
+.deactive {
+    color: red;
+}
+
+.alert {
+    display: flex;
+}
+
+.alerta {
+    height: 65px;
+    width: 550px;
+    padding-top: 5px;
+}

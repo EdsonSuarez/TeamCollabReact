@@ -10,31 +10,31 @@ export default function TeamAdd() {
     const saveTeam = ()  => {
 
     }
-    
+
     return (
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title" id="exampleModalLabel">Add Team</h2>
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h2 className="modal-title" id="exampleModalLabel">Add Team</h2>
             <button
               type="button"
-              class="btn-close"
+              className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
             ></button>
           </div>
-          <div class="col-12 col-lg-12">
+          <div className="col-12 col-lg-12">
             <div
-              class="alert alert-info alert-dismissible alertJustify d-flex"
+              className="alert alert-info alert-dismissible alertJustify d-flex"
               role="alert"
             >
-              <div class="alert-message">
+              <div className="alert-message">
                 {}
               </div>
               &nbsp;&nbsp;
               <button
                 type="button"
-                class="close alertButton"
+                className="close alertButton"
                 data-dismiss="alert"
                 aria-label="Close"
               >
@@ -42,17 +42,17 @@ export default function TeamAdd() {
               </button>
             </div>
           </div>
-          <div class="modal-body">
+          <div className="modal-body">
             <input
               type="text"
-              class="form-control"
+              className="form-control"
               aria-label="Default"
               aria-describedby="inputGroup-sizing-default"
               placeholder="Name Team"
             />
             <br />
             <select
-              class="form-select"
+              className="form-select"
               aria-label="Default select example"
               placeholder="project"
             >
@@ -61,12 +61,12 @@ export default function TeamAdd() {
               </option>
             </select>
             <br />
-            <button type="button" onClick={() => saveTeam()} class="btn btn-success">
+            <button type="button" onClick={() => saveTeam()} className="btn btn-success">
               Save
             </button>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
               Close
             </button>
           </div>
