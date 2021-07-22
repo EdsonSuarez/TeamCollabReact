@@ -183,7 +183,7 @@ export default function Board() {
   }
   return (
     <>
-    {/* <Task></Task> */}
+    <Task></Task>
     <input type="checkbox" checkbox="checkbox" onChange={cambio}/>
     <div className="menu">
     {toggle ? <FontAwesomeIcon icon={faAngleLeft} className="iconHead icon" /> :

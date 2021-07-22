@@ -50,10 +50,10 @@ export default function Task() {
     });
 
     setTaskId(localStorage.getItem("task"));
-    if (taskId) {
+    if (localStorage.getItem("task")) {
       setFlagEditTask(true);
       setFlagImage(false);
-      getOneTask(taskId)
+      getOneTask(localStorage.getItem("task"))
         .then((res) => {
           setTaskData(res.data.userTask);
           // console.log(res.data.userTask)
@@ -156,7 +156,7 @@ export default function Task() {
         data-bs-toggle="modal"
         data-bs-target="#modalTask"
         className="return-board-button"
-        onClick={() => onInit()}
+        onClick={onInit}
       >
         <FontAwesomeIcon icon={faPlus} className="return-board-icon" />
       </a>
