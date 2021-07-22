@@ -17,6 +17,7 @@ export default function Project() {
     active: ""
   };
   const [projects, setProjects] = useState();
+  const [projectsSearch, setProjectsSearch] = useState();
   const [showForm, setShowForm] = useState(objForm);
   const [message, setMessage] = useState();
 
@@ -25,6 +26,7 @@ export default function Project() {
       fetchProjects().then(({ data: { projects } }) => {
         setShowForm(objForm);
         setProjects(projects);
+        setProjectsSearch(projects);
       });
     }
   };
@@ -71,6 +73,11 @@ export default function Project() {
     });
   };
 
+  const handleProjectBoxSearch = (search) => {
+    search = search.trim().toLowerCase();
+    setProjects(search === '' ? projectsSearch : projects.filter((value) => value.name.toLowerCase().indexOf(search) > -1));
+  };
+
   useEffect(() => inicio(), []);
 
   return (
@@ -82,6 +89,7 @@ export default function Project() {
       onProjectBoxNew={handleProjectBoxNew}
       onProjectBoxEdit={handleProjectBoxListEdit}
       onProjectBoxDelete={handleProjectBoxListDelete}
+      onProjectBoxSearch={handleProjectBoxSearch}
     />
   );
 }
