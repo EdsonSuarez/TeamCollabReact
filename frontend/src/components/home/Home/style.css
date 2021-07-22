@@ -1,0 +1,132 @@
+/* .contenedorr{
+    padding-top: 6vh;
+} */
+
+h1 {
+    font-size: 60px;
+}
+
+h2 {
+    font-size: 40px;
+}
+
+h2.role-title {
+    font-size: 30px;
+}
+
+p {
+    font-size: 20px;
+}
+
+.carousel-caption {
+    margin-bottom: 30px;
+    width: 80%;
+}
+
+.bd-placeholder-img {
+    background-repeat: no-repeat;
+}
+
+.bi {
+    vertical-align: -0.125em;
+    fill: white;
+    width: 1em;
+    height: 1em;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: #fff;
+    border-radius: 0.75rem;
+}
+
+.carousel-caption {
+    top: 6rem;
+    z-index: 10;
+}
+
+.carousel-caption.dark {
+    color: black;
+}
+
+.carousel-item {
+    height: 32rem;
+}
+
+.carousel-item>img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    height: 32rem;
+}
+
+.hero-banner {
+    padding-bottom: 4rem;
+}
+
+.mb-6 {
+    margin-bottom: 4rem;
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .sizeCarousel {
+        height: 550px !important;
+    }
+
+    .sizeImgBotton {
+        width: 80%;
+        height: 200px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .sizeCarousel {
+        height: 600px !important;
+    }
+
+    .sizeImgBotton {
+        width: 80%;
+        height: 250px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .sizeCarousel {
+        height: 650px !important;
+    }
+
+    .sizeImgBotton {
+        width: 80%;
+        height: 300px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .sizeCarousel {
+        height: 700px !important;
+    }
+
+    .sizeImgBotton {
+        width: 80%;
+        height: 300px;
+    }
+}
+
+footer {
+    offset-position:initial;
+    bottom: 0;
+    background-color: #fc998e;
+    color: white;
+    padding: 1rem;
+    width: 100%;
+    /* position: fixed; */
+    z-index: 12;
+  }
+  

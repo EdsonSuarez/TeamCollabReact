@@ -370,3 +370,7 @@ mat-icon {
     background-color: red;
     color: #000;
 }
+
+.botonCard{    
+    margin: 0;
+}
