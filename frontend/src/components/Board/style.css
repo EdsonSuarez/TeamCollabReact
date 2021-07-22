@@ -151,7 +151,7 @@ input[type="checkbox"]:checked {
     min-width: 240px;
     width: 70%;
     padding: 2.5vh;
-    margin: 2.5vh auto;
+    margin: 2.5vh auto;    
 }
 
 .lowPriority {
