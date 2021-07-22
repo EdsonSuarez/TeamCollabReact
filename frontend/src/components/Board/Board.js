@@ -175,11 +175,10 @@ export default function Board() {
 
   const modalTeamOpen = (team) =>{
     setTeamSelect(team);
-    //console.log(teamSelect);
   }
 
   const deleteTeamF = (team) => {
-    console.log(team);
+    console.log("wwwwww");
   }
   return (
     <>

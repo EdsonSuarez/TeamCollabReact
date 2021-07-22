@@ -105,6 +105,7 @@ export default function Team({team}) {
               onChange = {(event) => setUserSelect(event.target.value)}
               value = {userSelect} 
             >
+              <option selected>Open this select menu</option>
             {usersAll.map((user, index) =>(
                <option key={Math.random()} value= {[user._id, user.fullName,  user.roleId.name].toString()}>
                  {user.fullName}
