@@ -175,7 +175,13 @@ export default function Board() {
   const modalTeamOpen = (team) =>{
     setTeamSelect(team);
   }
-
+  const handleTeamAdd = (res) => {
+    setTeamProject(teamProject => [...teamProject, res]);
+  }
+  const handleSprintAdd = (res) => {
+    console.log("jejeje",res);
+    setsprints(sprints => [...sprints, res]);
+  }
   const modalSprintOpen = (sprint) => {
     setSprintSelect(sprint);
   }
@@ -385,7 +391,7 @@ export default function Board() {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <TeamAdd/>
+      <TeamAdd onTeamAdd={handleTeamAdd}/>
     </div>
     
     <div id="modalSprint"
@@ -398,7 +404,7 @@ export default function Board() {
       className="modal fade"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-    ><SprintAdd/></div>
+    ><SprintAdd onSprintAdd={handleSprintAdd}/></div>
 
     <div id="detaTask" className="modal fade" tabIndex="-1">
       <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask}/>
