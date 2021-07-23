@@ -40,21 +40,19 @@ export default function Board() {
         setTeamProject(datosActivos);
         setTeamSelect(datosActivos[0]);
         changeTeam(datosActivos[0]);
-        // console.log("datos",datos);
         // console.log("daticos", daticos);
       })
       
     }else{
       teamsUser().then(response =>{
-        const datos = response.data.teamsUser;
-        // console.log("datos user", datos)
+        const datos = response.data.teamsUser;        
         const result = []
         datos.forEach(element =>{
           result.push(element.teamId)  
         })
-        // console.log("datos2", result)
-        setTeamProject(result);
-        changeTeam(result[0]);
+        const datosActivos = result.filter(data => data.projectId.active !== false)
+        setTeamProject(datosActivos);
+        changeTeam(datosActivos[0]);
       })
     }
   };
