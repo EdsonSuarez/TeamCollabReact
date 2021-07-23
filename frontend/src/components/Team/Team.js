@@ -106,11 +106,11 @@ export default function Team({team}) {
               value = {userSelect} 
             >
               <option selected>Open this select menu</option>
-            {usersAll.map((user, index) =>(
+            {usersAll && (usersAll.map((user) =>(
                <option key={Math.random()} value= {[user._id, user.fullName,  user.roleId.name].toString()}>
                  {user.fullName}
                </option>
-            ))}
+            )))}
              
             </select>
            <button type="button" className="btn btn-success btn-sm" onClick={() => userAdd()}>

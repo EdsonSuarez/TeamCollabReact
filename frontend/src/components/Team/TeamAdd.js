@@ -1,16 +1,65 @@
 import './style.css';
 import React, { useState, useEffect } from "react";
-import {getUsers, deleteDetail, addDetail} from '../../services/team';
-import {listUsersAll} from '../../services/user';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {addTeam, addDetail} from '../../services/team';
+import {fetchAdmin, fetchScrum} from '../../services/project';
+import {isAdmin, isScrumMaster, userData} from '../../services/auth';
 
 export default function TeamAdd() {
+  const [message, setMessage] = useState("");   
+  const [teamName, setTeamName] = useState("");   
+  const [projectSelect, setProjectSelect] = useState("");   
+  const [projects, setProjects] = useState([]);   
 
-    const saveTeam = ()  => {
+  const saveTeam = () => {
+    if(!teamName || !projectSelect){  
+      setMessage('Imcomplete Data');
+      closeAlert();
+    } else {
+      let team = {name: teamName, projectId: projectSelect};
+      addTeam(team).then(response => {
+        setMessage('Team add successful');
+        closeAlert();
+        if ( isScrumMaster()) {
+          let data = { userId: userData()._id , teamId: response.data.teamResult._id };
+          addDetail(data).then(response => {
+            console.log(response.data);
+          });
+        };
+      });
+    };
+  };
 
+  const listProjects = () => {
+    if( isAdmin() ) {
+      fetchAdmin().then(response => {
+        let projectTrue = response.data.projects.filter( project => project.active);
+        setProjects(projectTrue);
+        console.log(projectTrue);
+      })
     }
+    if( isScrumMaster() ) {
+      fetchScrum().then(response => {
+        let projectTrue = response.data.projects.filter( project => project.active);
+        setProjects(projectTrue);
+        console.log(projectTrue);
+      })
+    }
+    
+  }
 
+  useEffect(()=> listProjects(),[] )
+
+  function closeAlert() {
+    setTimeout(() => {
+      setMessage('');
+    }, 3000);
+  }
+
+  function closeX() {
+    setMessage('');
+  }
+
+  
     return (
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content">
@@ -23,13 +72,13 @@ export default function TeamAdd() {
               aria-label="Close"
             ></button>
           </div>
-          <div className="col-12 col-lg-12">
+          {message && (<div className="col-12 col-lg-12" >
             <div
               className="alert alert-info alert-dismissible alertJustify d-flex"
               role="alert"
             >
               <div className="alert-message">
-                {}
+                {message}
               </div>
               &nbsp;&nbsp;
               <button
@@ -37,11 +86,12 @@ export default function TeamAdd() {
                 className="close alertButton"
                 data-dismiss="alert"
                 aria-label="Close"
+                onClick={() => closeX()}
               >
                 <span aria-hidden="true">X</span>
               </button>
             </div>
-          </div>
+          </div>)}
           <div className="modal-body">
             <input
               type="text"
@@ -49,16 +99,22 @@ export default function TeamAdd() {
               aria-label="Default"
               aria-describedby="inputGroup-sizing-default"
               placeholder="Name Team"
-            />
+              onChange = {(event) => setTeamName(event.target.value)}
+              value = {teamName}             />
             <br />
             <select
               className="form-select"
               aria-label="Default select example"
               placeholder="project"
+              onChange = {(event) => setProjectSelect(event.target.value)}
+              value = {projectSelect} 
             >
-              <option>
-                {}
-              </option>
+              <option selected>Open this select menu</option>
+              {projects && (projects.map((project) =>(
+               <option key={Math.random()} value= {project._id}>
+                 {project.name}
+               </option>
+            )))}
             </select>
             <br />
             <button type="button" onClick={() => saveTeam()} className="btn btn-success">

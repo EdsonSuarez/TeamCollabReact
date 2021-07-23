@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
 import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
-import {getTeamAdmin, addTeam, deleteTeam} from '../../services/team';
+import {getTeamAdmin, deleteTeam} from '../../services/team';
 import {updateTask, getOneTask} from '../../services/task';
 import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -180,6 +180,10 @@ export default function Board() {
   const deleteTeamF = (team) => {
     console.log("wwwwww");
   }
+
+  const deleteSprintF = (sprint) => {
+    console.log(sprint);
+  }
   return (
     <>
     {/* <Task></Task> */}
@@ -236,7 +240,7 @@ export default function Board() {
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
                   <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" /> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" /> 
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick = {() => deleteSprintF(sprint)} /> 
                 </div >           
               }  
             </div>

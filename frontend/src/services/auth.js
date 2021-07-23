@@ -60,3 +60,15 @@ export const isUser =() =>{
 export const loggedIn=()=> {
     return !!localStorage.getItem('token');
 }
+
+export const userData =() => {
+    let jwtToken = localStorage.getItem('token');
+    if (jwtToken == null) {
+        return;
+    } else {
+        let jwtData = jwtToken.split('.')[1];
+        let decodedJwtJsonData = window.atob(jwtData);
+        let decodedJwtData = JSON.parse(decodedJwtJsonData);
+        return decodedJwtData;
+    }
+}
