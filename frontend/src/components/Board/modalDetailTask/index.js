@@ -42,7 +42,7 @@ export default function ModalDetailTask({datos}) {
 
                 <button
                     type="button"
-                    class="btn btn-warning btn-xs m-1"
+                    className="btn btn-warning btn-xs m-1"
                     onClick={getTask}
                     data-bs-dismiss="modal"
                     >

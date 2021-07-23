@@ -24,7 +24,7 @@ export default function Sprint({team}) {
         ></button>
       </div>
       <div className="modal-body">
-        <label for="exampleInputEmail1">Name</label>
+        <label htmlFor="exampleInputEmail1">Name</label>
         <input
           type="text"
           className="form-control"
@@ -32,7 +32,7 @@ export default function Sprint({team}) {
           aria-describedby="inputGroup-sizing-default"
         />
         <br />
-        <label for="">Description</label>
+        <label htmlFor="">Description</label>
         <input
           type="text"
           className="form-control"
