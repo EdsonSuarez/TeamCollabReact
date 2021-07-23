@@ -279,7 +279,7 @@ export default function Task() {
                 <FontAwesomeIcon
                   icon={faUserPlus}
                   data-bs-toggle="modal"
-                  data-bs-target="#modalTeam"
+                  data-bs-target="#modalTeamm"
                 />
               </button>
               <button
@@ -297,7 +297,7 @@ export default function Task() {
 
       <div
         className="modal fade"
-        id="modalTeam"
+        id="modalTeamm"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"

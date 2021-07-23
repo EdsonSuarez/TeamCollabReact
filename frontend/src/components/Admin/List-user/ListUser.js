@@ -48,7 +48,7 @@ export default function ListUser() {
     setErrorMessage("");
   };
 
-  const deleteUser = (user) => {
+  const deleteUserr = (user) => {
     if (user.active === false)
       return setErrorMessage("This user is already deleted");
     deleteUser(user)
@@ -156,7 +156,7 @@ export default function ListUser() {
                     </svg>
                   </button>
                   <button
-                    onClick={() => deleteUser(user)}
+                    onClick={() => deleteUserr(user)}
                     className="col-1 btn btn-danger"
                   >
                     <svg
