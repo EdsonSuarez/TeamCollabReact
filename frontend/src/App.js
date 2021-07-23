@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-
 function App() {
   return (
     <Router>
-      <Header />
+      <Header/>
     </Router>
   );
 }
