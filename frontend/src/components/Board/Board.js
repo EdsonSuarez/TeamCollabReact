@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
 import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
-import {getTeamAdmin} from '../../services/team';
-import {updateTask} from '../../services/task';
+import {getTeamAdmin, deleteTeam} from '../../services/team';
+import {updateTask, getOneTask} from '../../services/task';
 import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import Team from "../Team/Team";
+import TeamAdd from "../Team/TeamAdd";
+import Sprint from "../Sprint/Sprint";
+import SprintAdd from "../Sprint/SprintAdd";
 import { useHistory } from "react-router-dom";
 import Task from "../Task/Task";
+import ModalDetailTask from "./modalDetailTask";
 
 export default function Board() {
 
@@ -17,8 +22,11 @@ export default function Board() {
   const [taskToDo, setTaskToDo] = useState([]);   
   const [taskDoing, setTaskDoing] = useState([]);   
   const [taskTesting, setTaskTesting] = useState([]);   
-  const [taskDone, setTaskDone] = useState([]);    
+  const [taskDone, setTaskDone] = useState([]);   
+  const [teamSelect, setTeamSelect] = useState([]);
   let history = useHistory();
+  const [dataModal, setdataModal] = useState([]);      
+  const [projectName, setProjectName] = useState([]);
   
   const cambio = ()=>{
     setToggle(!toggle)    
@@ -29,6 +37,7 @@ export default function Board() {
     if(isAdmin()){  
       getTeamAdmin().then(response =>{  
         setTeamProject(response.data.team);
+        setTeamSelect(response.data.team[0]);
         const datos = response.data.team;
         changeTeam(datos[0]);
         // console.log("datos",datos);
@@ -51,12 +60,15 @@ export default function Board() {
 
   const changeTeam = (team)=>{
     if(team){
+      setTeamSelect(team);      
+      setProjectName(team.projectId.name)
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
         setsprints(response.data.boards)
         const datos = response.data.boards
         changeSprint(datos[0]);
         // console.log("sprints",datos[0])
+        setProjectName(team.projectId.name)
       })  
     }  
     
@@ -148,6 +160,20 @@ export default function Board() {
     })
   }
 
+  const datosModal = (id) => { 
+    localStorage.setItem('task', id );
+    getOneTask(id).then(response =>{
+      // console.log("task",response.data.userTask)
+      const datos = response.data.userTask;
+      setdataModal(datos)  
+    })
+  }
+
+  // const removeColor = id => setColors(colors.filter(color => color.id !== id));
+  const handleModalDetailTask = (taskId) => {
+    setTaskToDo(taskToDo.filter(task => task._id !== taskId))
+  }
+
   function getRandom() {
     return Math.random();
   }
@@ -155,6 +181,17 @@ export default function Board() {
   useEffect(()=> inicio(),[] )
   
 
+  const modalTeamOpen = (team) =>{
+    setTeamSelect(team);
+  }
+
+  const deleteTeamF = (team) => {
+    console.log("wwwwww");
+  }
+
+  const deleteSprintF = (sprint) => {
+    console.log(sprint);
+  }
   return (
     <>
     <Task></Task>
@@ -166,7 +203,7 @@ export default function Board() {
         <div className="menuUpper">
           <div className="containerTitleMenu">
             <h3 className="titleMenu">Teams/Proyect</h3>          
-            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" />  
+            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalAddTeam" />  
             : <span></span>}
           </div>
           <div className="buttonsMenu">
@@ -182,8 +219,8 @@ export default function Board() {
                 <div className="containerButton" >
                   <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} </div>
                   <span className="spacer"></span>                  
-                  <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" /> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" />      
+                  <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalTeam" onClick={() => modalTeamOpen(team)}/> 
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> deleteTeamF(team)}/>       
                 </div >           
               }  
             </div>
@@ -194,7 +231,7 @@ export default function Board() {
         <div className="menuLower">
           <div className="containerTitleMenu">
             <h3 className="titleMenu">Sprints</h3>
-            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" />  
+            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} data-bs-toggle="modal" data-bs-target="#modalAddSprint"className="iconHead iconos" />  
               : <span></span>}
           </div>
           <div className="buttonsMenu">
@@ -210,8 +247,8 @@ export default function Board() {
                 <div className="containerButton" >
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
-                  <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" /> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" /> 
+                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" /> 
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick = {() => deleteSprintF(sprint)} /> 
                 </div >           
               }  
             </div>
@@ -225,7 +262,7 @@ export default function Board() {
 
     <div className="card-header text-center title">
       <div className="col-lg-12">
-        <div className="form-group"></div>
+        <div className="form-group">{projectName}</div>
       </div>
     </div>
 
@@ -237,16 +274,16 @@ export default function Board() {
 
         {taskToDo.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}} >  
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}} >  
                         
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
-                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
+                    <button className="btn botonCard btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
+                    <button className="btn botonCard btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn botonCard btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
                   </div>
                 </div>
               </div>
@@ -264,15 +301,15 @@ export default function Board() {
 
       {taskDoing.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
-                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
+                    <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn botonCard btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn botonCard btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing </button>
                   </div>
                 </div>
               </div>
@@ -289,15 +326,15 @@ export default function Board() {
       
       {taskDone.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                    <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
-                    <button className="btn btn-success btn-sx textSize"onClick={()=> updateTasks(task, "doing")} > Doing </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing  </button>
+                    <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn botonCard btn-warning btn-sx textSize"onClick={()=> updateTasks(task, "doing")} > Doing </button>
+                    <button className="btn botonCard btn-light btn-sx textSize" onClick={()=> updateTasks(task, "testing")}> Testing  </button>
                   </div>
                 </div>
               </div>
@@ -314,15 +351,15 @@ export default function Board() {
 
       {taskTesting.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
-                <h5 className="card-title">{task.name}</h5>  
+                <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
-                  <button className="btn btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
-                    <button className="btn btn-success btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
-                    <button className="btn btn-light btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
+                    <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
+                    <button className="btn botonCard btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
+                    <button className="btn botonCard btn-success btn-sx textSize" onClick={()=> updateTasks(task, "done")}> Done  </button>
                   </div>
                 </div>
               </div>
@@ -337,6 +374,39 @@ export default function Board() {
         <h3 className="titleSections"></h3>        
 
     </div>
+    </div>
+
+        {/* ---------------- MODALS ------------------*/}
+
+    <div id="modalTeam"
+      className="modal fade"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    > <Team team={teamSelect}/>
+    </div>
+
+    <div id="modalAddTeam"
+      className="modal fade"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <TeamAdd/>
+    </div>
+    
+    <div id="modalSprint"
+      className="modal fade"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    ><Sprint/></div>
+
+    <div id="modalAddSprint"
+      className="modal fade"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    ><SprintAdd/></div>
+
+    <div id="detaTask" className="modal fade" tabIndex="-1">
+      <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask}/>
     </div>
 
     </>

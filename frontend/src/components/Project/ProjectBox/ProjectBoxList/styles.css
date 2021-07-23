@@ -1,0 +1,12 @@
+.cardProjectBoxList {
+    height: auto !important;
+    padding: unset !important;
+}
+
+.card-success {
+    background-color: #6bbb93;
+}
+
+.card-secondary {
+    background-color: #999a9b;
+}

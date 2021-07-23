@@ -1,66 +1,89 @@
-import React from "react";
+import React, { useState, useEffect }  from "react";
+import './styles.css';
 import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-router-dom'
 import Login from '../Login';
 import Board from '../../Board/Board';
 import Home from '../Home';
 import ListRole from "../../Admin/List-role/ListRole";
 import Project from '../../Project';
-import {logout} from '../../../services/auth';
 import ListUser from "../../Admin/List-user/ListUser";
 import RegisterUser from "../../Admin/Register-user/RegisterUser";
 
+import img1 from "../../../assets/img/teamCollab.png";
+import { isAdmin } from '../../../services/auth';
+import { useDispatch } from "react-redux";
+import { exit } from "../../../actions/home";
 
 export default function Header() {
+    const dispatch = useDispatch();
     let history = useHistory();
+    const [logueado, setLogueado] = useState();   
+    const [admin, setAdmin] = useState();   
 
-    const logoutFun =()=>{
-        logout()
-        // history.push("/login");            
+    const logoutFun = () => {
+        dispatch(exit());
+        setLogueado(false)               
+        history.push("/login"); 
     }    
+
+    const handleLogin = (value)=>{    
+        setLogueado(value);
+    }    
+
+    useEffect(()=> {                
+        setAdmin(!!isAdmin());
+
+    }, [logueado]);
 
     return (
         <>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">Navbar</a>
+            <Link className="nav-link" style={{color:"white"}} to="/"><a className="navbar-brand" href="/"><img src={img1} alt="" /></a></Link>
+            
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
-                        <li className="nav-item">
-                            {/* <a className="nav-link active" aria-current="page" href="#"><Link to="/">Home</Link></a> */}
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li className="nav-item">
-                            {/* <a className="nav-link" href="#"><Link to="/board">Board</Link></a> */}
-                            <Link to="/board">Board</Link>
-                        </li>
-                        <li className="nav-item">
-                            {/* <a className="nav-link">Pricing</a> */}
-                        </li>
-                        <li className="nav-item">
-                            {/* <a className="nav-link disabled" tabIndex="-1" aria-disabled="true">Disabled</a> */}
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/listRoles">List Roles</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/listUsers">List Users</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/registerUser">Register User</Link>
-                        </li>
+                        {logueado &&
+                            <>
+                            <li className="nav-item">
+                                <Link className="nav-link" style={{color:"white"}} to="/board">Board</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" style={{color:"white"}} to="/project">Projects</Link>
+                            </li>    
+                            </>
+                        }
+                        
+                        {admin && 
+                            <>
+                            <li className="nav-item">
+                                <Link className="nav-link" style={{color:"black"}} to="/listRoles">List Roles</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" style={{color:"black"}} to="/listUsers">List Users</Link>
+                            </li> 
+                            </>                            
+                        }
+                        
+                        
                     </ul>
                 </div>
-                <div className="d-flex">                    
-                    <button className="btn btn-outline-success" ><Link to="/login">Login</Link></button>
-                    <button className="btn btn-outline-success" >Register</button>
-                    <button className="btn btn-outline-success" onClick={logoutFun}>Logout <Link to="/login"></Link></button>
+                <div className="d-flex">                                            
+                    {!logueado ?
+                        <>
+                        <button className="btn btn-light" ><Link to="/login" style={{textDecoration:"none", color:"black"}}>Login</Link></button>
+                        <button className="btn btn-light" style={{color:"black"}}>Register</button>
+                        </>
+                        :
+                        <button className="btn btn-light" style={{color:"black"}} onClick={logoutFun}>Logout</button>
+                    }
                 </div>
             </div>
         </nav>
-        
+
         <Switch>
             <Route path="/registerUser">
                 <RegisterUser />
@@ -72,7 +95,7 @@ export default function Header() {
                 <ListRole />
             </Route>
             <Route path="/login">
-                <Login />
+                <Login onLogin={handleLogin}/>
             </Route>
             <Route path="/board">
                 <Board />
@@ -83,7 +106,7 @@ export default function Header() {
             <Route path="/">
                 <Home />
             </Route>
-            </Switch>
+        </Switch>
         </>
     );
 }
