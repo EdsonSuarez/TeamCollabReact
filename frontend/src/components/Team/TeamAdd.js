@@ -4,7 +4,7 @@ import {addTeam, addDetail} from '../../services/team';
 import {fetchAdmin, fetchScrum} from '../../services/project';
 import {isAdmin, isScrumMaster, userData} from '../../services/auth';
 
-export default function TeamAdd() {
+export default function TeamAdd({onTeamAdd}) {
   const [message, setMessage] = useState("");   
   const [teamName, setTeamName] = useState("");   
   const [projectSelect, setProjectSelect] = useState("");   
@@ -19,12 +19,14 @@ export default function TeamAdd() {
       addTeam(team).then(response => {
         setMessage('Team add successful');
         closeAlert();
+        onTeamAdd(response.data.teamResult);
         if ( isScrumMaster()) {
           let data = { userId: userData()._id , teamId: response.data.teamResult._id };
           addDetail(data).then(response => {
             console.log(response.data);
           });
         };
+
       });
     };
   };
@@ -93,6 +95,7 @@ export default function TeamAdd() {
             </div>
           </div>)}
           <div className="modal-body">
+          <label htmlFor="exampleInputEmail1">Name</label>
             <input
               type="text"
               className="form-control"
@@ -102,6 +105,7 @@ export default function TeamAdd() {
               onChange = {(event) => setTeamName(event.target.value)}
               value = {teamName}             />
             <br />
+            <label htmlFor="exampleInputEmail1">Project</label>
             <select
               className="form-select"
               aria-label="Default select example"
