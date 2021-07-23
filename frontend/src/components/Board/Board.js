@@ -26,6 +26,7 @@ export default function Board() {
   const [teamSelect, setTeamSelect] = useState([]);
   let history = useHistory();
   const [dataModal, setdataModal] = useState([]);      
+  const [nameProject, setNameProject] = useState([]);      
   
   const cambio = ()=>{
     setToggle(!toggle)    
@@ -59,7 +60,8 @@ export default function Board() {
 
   const changeTeam = (team)=>{
     if(team){
-      setTeamSelect(team);
+      setTeamSelect(team);      
+      setNameProject(team.projectId.name)
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
         setsprints(response.data.boards)
@@ -251,7 +253,7 @@ export default function Board() {
 
     <div className="card-header text-center title">
       <div className="col-lg-12">
-        <div className="form-group"></div>
+        <div className="form-group">{nameProject}</div>
       </div>
     </div>
 
