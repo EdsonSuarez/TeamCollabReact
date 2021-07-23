@@ -61,7 +61,7 @@ export default function Board() {
   const changeTeam = (team)=>{
     if(team){
       setTeamSelect(team);      
-      setNameProject(team.projectId.name)
+      setProjectName(team.projectId.name)
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
         setsprints(response.data.boards)
