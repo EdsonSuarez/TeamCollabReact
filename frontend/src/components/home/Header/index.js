@@ -37,22 +37,20 @@ export default function Header() {
         <>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-            <a className="navbar-brand" href="/"><img src={img1} alt="" /></a>
+            <Link className="nav-link" style={{color:"white"}} to="/"><a className="navbar-brand" href="/"><img src={img1} alt="" /></a></Link>
+            
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <Link className="nav-link" style={{color:"black"}} to="/">Home</Link>
-                        </li>
                         {logueado &&
                             <>
                             <li className="nav-item">
-                                <Link className="nav-link" style={{color:"black"}} to="/board">Board</Link>
+                                <Link className="nav-link" style={{color:"white"}} to="/board">Board</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" style={{color:"black"}} to="/project">Projects</Link>
+                                <Link className="nav-link" style={{color:"white"}} to="/project">Projects</Link>
                             </li>    
                             </>
                         }
@@ -74,11 +72,11 @@ export default function Header() {
                 <div className="d-flex">                                            
                     {!logueado ?
                         <>
-                        <button className="btn btn-outline-success" ><Link to="/login" style={{textDecoration:"none", color:"black"}}>Login</Link></button>
-                        <button className="btn btn-outline-success" style={{color:"black"}}>Register</button>
+                        <button className="btn btn-light" ><Link to="/login" style={{textDecoration:"none", color:"black"}}>Login</Link></button>
+                        <button className="btn btn-light" style={{color:"black"}}>Register</button>
                         </>
                         :
-                        <button className="btn btn-outline-success" style={{color:"black"}} onClick={logoutFun}>Logout</button>
+                        <button className="btn btn-light" style={{color:"black"}} onClick={logoutFun}>Logout</button>
                     }
                 </div>
             </div>
