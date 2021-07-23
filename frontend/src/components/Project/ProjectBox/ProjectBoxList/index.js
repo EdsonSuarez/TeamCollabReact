@@ -38,11 +38,11 @@ export default function ProjectBoxList({
       }`}
       style={{ width: "18rem" }}
     >
-      <div className="card-header">{name}</div>
+      <div className="card-header text-light">{name}</div>
       <div className="card-body">
-        <p className="card-text text-justify">{description}</p>
+        <p className="card-text text-justify text-light">{description}</p>
         <div className="row">
-          <h5 className="card-title text-start">
+          <h5 className="card-title text-start text-light">
             Status:
             <span
               className={`badge text-dark ${
@@ -58,7 +58,7 @@ export default function ProjectBoxList({
           </h5>
         </div>
         <div className="row">
-          <h5 className="card-title text-start">
+          <h5 className="card-title text-start text-light">
             Date: {moment(date).format("DD-MM-yyyy")}
           </h5>
         </div>
@@ -105,7 +105,11 @@ export default function ProjectBoxList({
           </>
         )}
 
-        <Link to={`/board/${_id}`} className="btn btn-info btn-xs m-1" onClick={() => localStorage.setItem('project', _id)}>
+        <Link
+          to={`/board/${_id}`}
+          className="btn btn-info btn-xs m-1"
+          onClick={() => localStorage.setItem("project", _id)}
+        >
           <FontAwesomeIcon icon={faChalkboardTeacher} />
         </Link>
       </div>

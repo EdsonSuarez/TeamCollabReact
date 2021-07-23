@@ -38,14 +38,21 @@ export default function ProjectBox({
           <div className="row">
             <div className={!objForm.show ? "col-lg-12" : "col-lg-6"}>
               <div className="row justify-content-center">
-                {projects?.map((project) => (
-                  <ProjectBoxList
-                    key={project._id}
-                    {...project}
-                    onProjectBoxListEdit={onProjectBoxEdit}
-                    onProjectBoxListDelete={onProjectBoxDelete}
-                  />
-                ))}
+                {
+                  projects.length ?
+                  (projects?.map((project) => (
+                    <ProjectBoxList
+                      key={project._id}
+                      {...project}
+                      onProjectBoxListEdit={onProjectBoxEdit}
+                      onProjectBoxListDelete={onProjectBoxDelete}
+                    />
+                  )))
+                  :
+                  <div className="container p-2">
+                    <h5 className="text-secondary">The current user does not have projects.</h5>
+                  </div>
+                }
               </div>
             </div>
             {objForm.show && (

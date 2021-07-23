@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
 import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
-import {getTeamAdmin, addTeam, deleteTeam} from '../../services/team';
+import {getTeamAdmin, deleteTeam} from '../../services/team';
 import {updateTask, getOneTask} from '../../services/task';
 import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,9 +24,10 @@ export default function Board() {
   const [taskTesting, setTaskTesting] = useState([]);   
   const [taskDone, setTaskDone] = useState([]);   
   const [teamSelect, setTeamSelect] = useState([]);
+  const [sprintSelect, setSprintSelect] = useState([]);
   let history = useHistory();
   const [dataModal, setdataModal] = useState([]);      
-  const [nameProject, setNameProject] = useState([]);      
+  const [projectName, setProjectName] = useState([]);
   
   const cambio = ()=>{
     setToggle(!toggle)    
@@ -61,13 +62,14 @@ export default function Board() {
   const changeTeam = (team)=>{
     if(team){
       setTeamSelect(team);      
-      setNameProject(team.projectId.name)
+      setProjectName(team.projectId.name)
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
         setsprints(response.data.boards)
         const datos = response.data.boards
         changeSprint(datos[0]);
         // console.log("sprints",datos[0])
+        setProjectName(team.projectId.name)
       })  
     }  
     
@@ -168,6 +170,11 @@ export default function Board() {
     })
   }
 
+  // const removeColor = id => setColors(colors.filter(color => color.id !== id));
+  const handleModalDetailTask = (taskId) => {
+    setTaskToDo(taskToDo.filter(task => task._id !== taskId))
+  }
+
   function getRandom() {
     return Math.random();
   }
@@ -177,11 +184,18 @@ export default function Board() {
 
   const modalTeamOpen = (team) =>{
     setTeamSelect(team);
-    //console.log(teamSelect);
+  }
+
+  const modalSprintOpen = (sprint) => {
+    setSprintSelect(sprint);
   }
 
   const deleteTeamF = (team) => {
-    console.log(team);
+    console.log("wwwwww");
+  }
+
+  const deleteSprintF = (sprint) => {
+    console.log(sprint);
   }
   return (
     <>
@@ -238,8 +252,8 @@ export default function Board() {
                 <div className="containerButton" >
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
-                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" /> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" /> 
+                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" onClick={() => modalSprintOpen(sprint)} /> 
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick = {() => deleteSprintF(sprint)} /> 
                 </div >           
               }  
             </div>
@@ -253,7 +267,7 @@ export default function Board() {
 
     <div className="card-header text-center title">
       <div className="col-lg-12">
-        <div className="form-group">{nameProject}</div>
+        <div className="form-group">{projectName}</div>
       </div>
     </div>
 
@@ -265,7 +279,7 @@ export default function Board() {
 
         {taskToDo.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}} >  
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}} >  
                         
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
@@ -292,7 +306,7 @@ export default function Board() {
 
       {taskDoing.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
@@ -317,7 +331,7 @@ export default function Board() {
       
       {taskDone.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
@@ -342,7 +356,7 @@ export default function Board() {
 
       {taskTesting.map(task =>(
           <div key={getRandom()} >
-            <div className="card" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
+            <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
                 <p className="card-text">{task.description}</p>
@@ -388,7 +402,7 @@ export default function Board() {
       className="modal fade"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-    ><Sprint/></div>
+    ><Sprint sprint={sprintSelect}/></div>
 
     <div id="modalAddSprint"
       className="modal fade"
@@ -397,7 +411,7 @@ export default function Board() {
     ><SprintAdd/></div>
 
     <div id="detaTask" className="modal fade" tabIndex="-1">
-      <ModalDetailTask datos={dataModal}/>
+      <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask}/>
     </div>
 
     </>

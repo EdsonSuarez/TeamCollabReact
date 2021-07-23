@@ -13,7 +13,6 @@ import {
   saveTask,
   saveTaskImg,
   editTask,
-  deleteTask,
   getTasks,
   getOneTask,
   updateTask,
@@ -46,11 +45,12 @@ export default function Task() {
     setTaskData({
       ...taskData,
       boardId: localStorage.getItem("sprint"),
-      // priority: "Priority",
+      priority: taskData.priority,
     });
 
     setTaskId(localStorage.getItem("task"));
     if (localStorage.getItem("task")) {
+      console.log('Hay task');
       setFlagEditTask(true);
       setFlagImage(false);
       getOneTask(localStorage.getItem("task"))
@@ -61,6 +61,12 @@ export default function Task() {
         .catch((error) => {
           console.log(error);
         });
+    }
+    else {
+      setTaskData({name: "",
+      description: "",
+      boardId: "",
+      priority: ""})
     }
 
     getTasks().then((res) => {
@@ -86,6 +92,7 @@ export default function Task() {
   };
 
   const usersTeam = () => {
+    console.log(flagEditTask);
     if (flagEditTask == true) {
       getUsersTask(taskId)
         .then((res) => {
@@ -107,18 +114,18 @@ export default function Task() {
   const userAdd = (member) => {
     setTaskId(localStorage.getItem("task"));
     console.log(member);
-    // let taskDetail = {userId: member.userId._id, taskId: taskId}
+    let taskDetail = {userId: member.userId._id, taskId: taskId}
 
-    // addDetail(taskDetail)
-    //   .then((res) => {
-    //     setSuccessmsgUser(`Task assigned to ${member.userId.fullName}`);
-    //     closeAlert(3000);
-    //   })
-    //   .catch((error) => {
-    //     setErrormsgUser(error.message);
-    //     closeAlert(3000);
-    //     console.log(error);
-    //   })
+    addDetail(taskDetail)
+      .then((res) => {
+        setSuccessmsgUser(`Task assigned to ${member.userId.fullName}`);
+        closeAlert(3000);
+      })
+      .catch((error) => {
+        setErrormsgUser(error.message);
+        closeAlert(3000);
+        console.log(error);
+      })
   };
 
   const userDelete = (userId) => {
@@ -158,7 +165,7 @@ export default function Task() {
         className="return-board-button"
         onClick={onInit}
       >
-        <FontAwesomeIcon icon={faPlus} className="return-board-icon" />
+        <FontAwesomeIcon icon={faPlus} className="return-board-icon" onClick={deleteLocalInfo}/>
       </a>
 
       <div
@@ -237,8 +244,8 @@ export default function Task() {
               <select
                 onChange={(e) =>
                   setTaskData({ ...taskData, priority: e.target.value })
-                }
-                defaultValue={taskData.priority}
+                } 
+                value={taskData.priority}
                 className="form-select"
                 required
               >
