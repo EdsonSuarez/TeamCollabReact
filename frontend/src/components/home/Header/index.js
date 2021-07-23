@@ -25,7 +25,7 @@ export default function Header() {
 
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                <a className="navbar-brand" href="#"><img src={img1} alt="" /></a>
+                <a className="navbar-brand" href="/"><img src={img1} alt="" /></a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -38,7 +38,7 @@ export default function Header() {
                                 <Link className="nav-link" style={{color:"black"}} to="/board">Board</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" style={{color:"black"}} to="/project">Projectos</Link>
+                                <Link className="nav-link" style={{color:"black"}} to="/project">Projects</Link>
                             </li>    
                             {isAdmin ?
                                 <li className="nav-item">
@@ -54,7 +54,7 @@ export default function Header() {
                     </div>
                     <div className="d-flex">                    
                         <button className="btn btn-outline-success" style={{color:"black"}}>Register</button>
-                        {/* <button className="btn btn-outline-success" style={{color:"black"}} onClick={logoutFun}>Logout</button> */}
+                        <button className="btn btn-outline-success" style={{color:"black"}} onClick={logoutFun}>Logout</button>
                         <button className="btn btn-outline-success" ><Link to="/login" style={{textDecoration:"none", color:"black"}}>Login</Link></button>                        
                     </div>
                 </div>
