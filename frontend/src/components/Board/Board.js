@@ -10,7 +10,6 @@ import Team from "../Team/Team";
 import TeamAdd from "../Team/TeamAdd";
 import Sprint from "../Sprint/Sprint";
 import SprintAdd from "../Sprint/SprintAdd";
-import { useHistory } from "react-router-dom";
 import Task from "../Task/Task";
 import ModalDetailTask from "./modalDetailTask";
 
@@ -25,7 +24,6 @@ export default function Board() {
   const [taskDone, setTaskDone] = useState([]);   
   const [teamSelect, setTeamSelect] = useState([]);
   const [sprintSelect, setSprintSelect] = useState([]);
-  let history = useHistory();
   const [dataModal, setdataModal] = useState([]);      
   const [projectName, setProjectName] = useState([]);
   
@@ -37,17 +35,19 @@ export default function Board() {
     console.log("se ejecuta")
     if(isAdmin()){  
       getTeamAdmin().then(response =>{  
-        setTeamProject(response.data.team);
-        setTeamSelect(response.data.team[0]);
         const datos = response.data.team;
-        changeTeam(datos[0]);
+        const datosActivos = datos.filter(data => data.projectId.active !== false)
+        setTeamProject(datosActivos);
+        setTeamSelect(datosActivos[0]);
+        changeTeam(datosActivos[0]);
         // console.log("datos",datos);
+        // console.log("daticos", daticos);
       })
       
     }else{
       teamsUser().then(response =>{
         const datos = response.data.teamsUser;
-        console.log("datos user", datos)
+        // console.log("datos user", datos)
         const result = []
         datos.forEach(element =>{
           result.push(element.teamId)  
@@ -116,27 +116,17 @@ export default function Board() {
     updateTask(task).then(response =>{
       const anterior = response.data.task;
       switch (anterior.status) {
-        case 'to-do':      
-          console.log("todo", taskToDo)
-          const index = taskToDo.indexOf(anterior);
-          taskToDo.splice(index, 1);    
-          console.log("todo", taskToDo)
-          setTaskToDo(taskToDo=>[...taskToDo]);
+        case 'to-do':                
+          setTaskToDo(taskToDo.filter(task=> task._id !== anterior._id));
           break;
         case 'doing':          
-          const index2 = taskDoing.indexOf(anterior);
-          taskDoing.splice(index2, 1);
-          setTaskDoing(taskDoing=>[...taskDoing]);
+          setTaskDoing(taskDoing.filter(task=> task._id !== anterior._id));          
           break;
         case 'testing':          
-          const index3 = taskTesting.indexOf(anterior);
-          taskTesting.splice(index3, 1);
-          setTaskTesting(taskTesting=>[...taskTesting]);
+          setTaskTesting(taskTesting.filter(task=> task._id !== anterior._id));          
           break;
         case 'done':
-          const index4 = taskDone.indexOf(anterior);
-          taskDone.splice(index4, 1);
-          setTaskDone(taskDone=>[...taskDone]);
+          setTaskDone(taskDone.filter(task=> task._id !== anterior._id));    
           break;
         default:
           break;
