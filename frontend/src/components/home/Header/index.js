@@ -1,22 +1,24 @@
 import React, { useState, useEffect }  from "react";
+import './styles.css';
 import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-router-dom'
 import Login from '../Login';
 import Board from '../../Board/Board';
 import Home from '../Home';
 import ListRole from "../../Admin/List-role/ListRole";
 import Project from '../../Project';
-import { logout } from '../../../services/auth';
 import ListUser from "../../Admin/List-user/ListUser";
-import './styles.css';
 import img1 from "../../../assets/img/teamCollab.png";
-import {isAdmin, isUser, isScrumMaster,loggedIn} from '../../../services/auth';
+import { isAdmin } from '../../../services/auth';
+import { useDispatch } from "react-redux";
+import { exit } from "../../../actions/home";
 
 export default function Header() {
+    const dispatch = useDispatch();
     let history = useHistory();
     const [logueado, setLogueado] = useState();   
 
     const logoutFun = () => {
-        logout()
+        dispatch(exit());
         setLogueado(false)               
     }    
 

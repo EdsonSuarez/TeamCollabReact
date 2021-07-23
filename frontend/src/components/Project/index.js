@@ -37,7 +37,7 @@ export default function Project() {
       setProjects(projects);
       setProjectsSearch(projects);
     });
-  }
+  };
 
   const listScrum = () => {
     fetchScrum().then(({ data: { projects } }) => {
@@ -45,7 +45,7 @@ export default function Project() {
       setProjects(projects);
       setProjectsSearch(projects);
     });
-  }
+  };
 
   const listUserLeader = () => {
     fetchUserLeader().then(({ data: { projects } }) => {
@@ -53,7 +53,7 @@ export default function Project() {
       setProjects(projects);
       setProjectsSearch(projects);
     });
-  }
+  };
 
   const handleProjectBoxFormSave = (dataSave) => {
     if(dataSave._id === '') {
