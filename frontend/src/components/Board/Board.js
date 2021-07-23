@@ -24,6 +24,7 @@ export default function Board() {
   const [taskTesting, setTaskTesting] = useState([]);   
   const [taskDone, setTaskDone] = useState([]);   
   const [teamSelect, setTeamSelect] = useState([]);
+  const [sprintSelect, setSprintSelect] = useState([]);
   let history = useHistory();
   const [dataModal, setdataModal] = useState([]);      
   const [projectName, setProjectName] = useState([]);
@@ -185,6 +186,10 @@ export default function Board() {
     setTeamSelect(team);
   }
 
+  const modalSprintOpen = (sprint) => {
+    setSprintSelect(sprint);
+  }
+
   const deleteTeamF = (team) => {
     console.log("wwwwww");
   }
@@ -247,7 +252,7 @@ export default function Board() {
                 <div className="containerButton" >
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
-                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" /> 
+                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" onClick={() => modalSprintOpen(sprint)} /> 
                   <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick = {() => deleteSprintF(sprint)} /> 
                 </div >           
               }  
@@ -397,7 +402,7 @@ export default function Board() {
       className="modal fade"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-    ><Sprint/></div>
+    ><Sprint sprint={sprintSelect}/></div>
 
     <div id="modalAddSprint"
       className="modal fade"
