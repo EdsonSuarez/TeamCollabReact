@@ -20,7 +20,7 @@ const MessageError = ({ errorMessage }) => {
   );
 };
 
-export default function Login() {
+export default function Login({onLogin}) {
   const [error, setError] = useState();
   useSelector(({ homes: { constant, data } }) => {
     if(constant && constant === LOGIN) handleHistory(data);
@@ -38,6 +38,7 @@ export default function Login() {
   };
 
   const handleHistory = (token) => {
+    onLogin(true);
     setToken(token);
     history.push("/project");  
   };

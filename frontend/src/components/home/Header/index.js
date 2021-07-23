@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-router-dom'
 import Login from '../Login';
 import Board from '../../Board/Board';
@@ -13,12 +13,22 @@ import {isAdmin, isUser, isScrumMaster,loggedIn} from '../../../services/auth';
 
 export default function Header() {
     let history = useHistory();
+    const [logueado, setLogueado] = useState();   
 
     const logoutFun = () => {
         logout()
-        // history.push("/login");            
-    }
-    console.log("login", loggedIn())
+        setLogueado(false)               
+    }    
+
+    const handleLogin = (value)=>{
+        console.log("value", value)
+        setLogueado(value);
+    }    
+
+    useEffect(()=> {        
+        console.log("entro", logueado);
+
+    }, [logueado]);
 
     return (
         <>            
@@ -52,10 +62,15 @@ export default function Header() {
                             </li>                                            
                         </ul>
                     </div>
-                    <div className="d-flex">                    
-                        <button className="btn btn-outline-success" style={{color:"black"}}>Register</button>
-                        <button className="btn btn-outline-success" style={{color:"black"}} onClick={logoutFun}>Logout</button>
-                        <button className="btn btn-outline-success" ><Link to="/login" style={{textDecoration:"none", color:"black"}}>Login</Link></button>                        
+                    <div className="d-flex">                                            
+                        {!logueado ?
+                            <>
+                            <button className="btn btn-outline-success" ><Link to="/login" style={{textDecoration:"none", color:"black"}}>Login</Link></button>
+                            <button className="btn btn-outline-success" style={{color:"black"}}>Register</button>
+                            </>
+                            :
+                            <button className="btn btn-outline-success" style={{color:"black"}} onClick={logoutFun}>Logout</button>
+                        }
                     </div>
                 </div>
             </nav>
@@ -68,7 +83,7 @@ export default function Header() {
                     <ListRole />
                 </Route>
                 <Route path="/login">
-                    <Login />
+                    <Login onLogin={handleLogin}/>
                 </Route>
                 <Route path="/board">
                     <Board />
