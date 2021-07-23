@@ -58,15 +58,15 @@ export default function Header() {
                         }
                         
                         {admin && 
-                            <>
+                            <>                            
                             <li className="nav-item">
                                 <Link className="nav-link" style={{color:"black"}} to="/listRoles">List Roles</Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" style={{color:"black"}} to="/listUsers">List Users</Link>
-                            </li> 
+                            </li>    
                             </>                            
-                        }
+                        }                    
                         
                         
                     </ul>

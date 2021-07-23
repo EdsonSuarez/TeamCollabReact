@@ -362,7 +362,7 @@ export default function Board() {
     </div>
 
     <div className="containerOtro">
-        <h3 className="titleSections"></h3>        
+        <h3 className="titleSections"></h3>      
 
     </div>
     </div>
