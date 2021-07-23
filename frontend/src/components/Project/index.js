@@ -13,6 +13,7 @@ import {
 
 import ProjectBox from "./ProjectBox";
 import Alerts from "./Alerts";
+import Spinner from "./Spinner";
 
 export default function Project() {
   const objForm = {
@@ -25,6 +26,7 @@ export default function Project() {
     date: "",
     active: "",
   };
+  const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState();
   const [projectsSearch, setProjectsSearch] = useState();
   const [showForm, setShowForm] = useState(objForm);
@@ -46,17 +48,13 @@ export default function Project() {
 
   const listAdmin = () => {
     fetchAdmin().then(({ data: { projects } }) => {
-      setShowForm(objForm);
-      setProjects(projects);
-      setProjectsSearch(projects);
+      auxList(projects);
     });
   };
 
   const listScrum = () => {
     fetchScrum().then(({ data: { projects } }) => {
-      setShowForm(objForm);
-      setProjects(projects);
-      setProjectsSearch(projects);
+      auxList(projects);
     });
   };
 
@@ -68,9 +66,7 @@ export default function Project() {
           projects.push(teamId.projectId);
         }
       });
-      setShowForm(objForm);
-      setProjects(projects);
-      setProjectsSearch(projects);
+      auxList(projects);
     });
   };
 
@@ -128,6 +124,7 @@ export default function Project() {
         projects.map((item) => (item._id === project._id ? project : item))
       );
       alertCtrl("success", "Project deleted with success!");
+      window.scrollTo(0, 0);
     });
   };
 
@@ -154,21 +151,32 @@ export default function Project() {
     }, 2000);
   };
 
+  const auxList = (projects) => {
+    setShowForm(objForm);
+    setProjects(projects);
+    setProjectsSearch(projects);
+    setLoading(false);
+  };
+
   useEffect(() => inicio(), []);
 
   return (
     <>
       <Alerts {...alertDetail} />
-      <ProjectBox
-        projects={projects}
-        onProjectBoxSave={handleProjectBoxFormSave}
-        objForm={showForm}
-        onProjectBoxClose={handleProjectBoxFormClose}
-        onProjectBoxNew={handleProjectBoxNew}
-        onProjectBoxEdit={handleProjectBoxListEdit}
-        onProjectBoxDelete={handleProjectBoxListDelete}
-        onProjectBoxSearch={handleProjectBoxSearch}
-      />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <ProjectBox
+          projects={projects}
+          onProjectBoxSave={handleProjectBoxFormSave}
+          objForm={showForm}
+          onProjectBoxClose={handleProjectBoxFormClose}
+          onProjectBoxNew={handleProjectBoxNew}
+          onProjectBoxEdit={handleProjectBoxListEdit}
+          onProjectBoxDelete={handleProjectBoxListDelete}
+          onProjectBoxSearch={handleProjectBoxSearch}
+        />
+      )}
     </>
   );
 }
