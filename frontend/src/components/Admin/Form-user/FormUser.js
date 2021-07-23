@@ -1,33 +1,43 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
-import { listRoles } from "../../../services/admin";
 import { Alert } from "@material-ui/lab";
 
-export default function FormUser({
-  userData,
-  successMessage,
-  errorMessage,
-  closeX,
-  isEditing,
-}) {
-  const [rolesData, setRolesData] = useState([]);
+export default function FormUser({ userData, isEditing, rolesData = [] }) {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [user, setUser] = useState(userData);
+
+  useEffect(()=> {
+    setUser("");
+    setSuccessMessage("");
+    setErrorMessage("");
+  },[])
 
   const handleUser = (event) => {
     event.preventDefault();
-    
+  };
+
+  const closeAlert = () => {
+    setTimeout(() => {
+      setErrorMessage("");
+      setSuccessMessage("");
+    }, 500);
+  };
+
+  const closeX = () => {
+    setSuccessMessage("");
+    setErrorMessage("");
+  };
+
+  const setDefault = () => {
+    setSuccessMessage("");
+    setErrorMessage("");
+    setUser("");
   };
 
   return (
     <>
-      <form
-        className={
-          isEditing
-            ? "modal-dialog modal-dialog-centered modal-dialog-scrollable"
-            : "row row-cols-lg-auto g-3 align-items-center"
-        }
-        id="userFormModal"
-      >
-        <legend>{isEditing ? "Edit User" : "Register User"}</legend>
+      <form >
         <div className="container alerta">
           {successMessage !== "" ? (
             <Alert
@@ -55,47 +65,64 @@ export default function FormUser({
             <div className="alerta"></div>
           )}
         </div>
-        <div className="container">
+        <div className="modal-body">
           <div className="row justify-content-center">
             <input
+              className="form-control"
               type="text"
               placeholder="Full Name"
               required
-              value={userData.fullName}
+              value={user.fullName}
+              onChange={({ target: { value } }) => setUser({...user, fullName: value})}
             ></input>
           </div>
           <div className="row justify-content-center">
             <input
+              className="form-control"
               type="email"
               placeholder="Email"
               required
-              value={userData.email}
+              value={user.email}
+              onChange={({ target: { value } }) => setUser({...user, email: value})}
             ></input>
           </div>
           <div className="row justify-content-center">
             <input
+              className="form-control"
               type="password"
               placeholder="Password"
               required
-              value={userData.password}
+              value={user.password}
+              onChange={({ target: { value } }) => setUser({...user, password: value})}
             ></input>
           </div>
-          <div className="row justify-content-center">
-            <select className="form-select">
-              <option selected>Choose...</option>
-              {rolesData.map((rol) => (
-                <option value={rol._id} key={rol._id}>
-                  {rol.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="row justify-content-center">
+          {rolesData.length ? (
+            <div className="row justify-content-center">
+              <select className="form-select">
+                {user.roleId ? "" : <option selected>Choose...</option>}
+                {rolesData.map((rol) => (
+                  <option value={rol._id} key={rol._id}>
+                    {rol.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            ""
+          )}
+          <div className="modal-footer">
             <div className="col-lg-6">
               <button>{isEditing ? "Update" : "Register"}</button>
             </div>
             <div className="col-lg-6">
-              <button>Cancel</button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                onClick={() => setDefault}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import ListRole from "../../Admin/List-role/ListRole";
 import Project from '../../Project';
 import {logout} from '../../../services/auth';
 import ListUser from "../../Admin/List-user/ListUser";
+import RegisterUser from "../../Admin/Register-user/RegisterUser";
 
 
 export default function Header() {
@@ -47,6 +48,9 @@ export default function Header() {
                         <li className="nav-item">
                             <Link className="nav-link" to="/listUsers">List Users</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/registerUser">Register User</Link>
+                        </li>
                     </ul>
                 </div>
                 <div className="d-flex">                    
@@ -58,6 +62,9 @@ export default function Header() {
         </nav>
         
         <Switch>
+            <Route path="/registerUser">
+                <RegisterUser />
+            </Route>
             <Route path="/listUsers">
                 <ListUser />
             </Route>
