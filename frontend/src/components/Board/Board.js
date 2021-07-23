@@ -275,7 +275,7 @@ export default function Board() {
                         
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
@@ -301,7 +301,7 @@ export default function Board() {
             <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
@@ -326,7 +326,7 @@ export default function Board() {
             <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
@@ -351,7 +351,7 @@ export default function Board() {
             <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
