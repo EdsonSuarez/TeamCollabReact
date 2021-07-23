@@ -168,6 +168,11 @@ export default function Board() {
     })
   }
 
+  // const removeColor = id => setColors(colors.filter(color => color.id !== id));
+  const handleModalDetailTask = (taskId) => {
+    setTaskToDo(taskToDo.filter(task => task._id !== taskId))
+  }
+
   function getRandom() {
     return Math.random();
   }
@@ -397,7 +402,7 @@ export default function Board() {
     ><SprintAdd/></div>
 
     <div id="detaTask" className="modal fade" tabIndex="-1">
-      <ModalDetailTask datos={dataModal}/>
+      <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask}/>
     </div>
 
     </>
