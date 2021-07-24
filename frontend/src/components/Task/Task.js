@@ -12,7 +12,6 @@ import { Alert } from "@material-ui/lab";
 import {
   saveTask,
   saveTaskImg,
-  editTask,
   getTasks,
   getOneTask,
   updateTask,
@@ -30,6 +29,7 @@ export default function Task() {
     boardId: "",
     priority: "",
   });
+  const [taskFile, setTaskFile] = useState(null)
 
   const [errormsg, setErrormsg] = useState("");
   const [errormsgUser, setErrormsgUser] = useState("");
@@ -42,14 +42,14 @@ export default function Task() {
   const [taskId, setTaskId] = useState("");
 
   const onInit = () => {
-    setTaskData({
-      ...taskData,
-      boardId: localStorage.getItem("sprint"),
-      priority: taskData.priority,
-    });
+    
 
     setTaskId(localStorage.getItem("task"));
     if (localStorage.getItem("task")) {
+      setTaskData({
+        ...taskData,
+        priority: taskData.priority,
+      });
       console.log('Hay task');
       setFlagEditTask(true);
       setFlagImage(false);
@@ -63,10 +63,13 @@ export default function Task() {
         });
     }
     else {
-      setTaskData({name: "",
-      description: "",
-      boardId: "",
-      priority: ""})
+      setTaskData({
+        ...taskData,
+        name: "",
+        description: "",
+        boardId: localStorage.getItem("sprint"),
+        priority: "Priority", 
+      });
     }
 
     getTasks().then((res) => {
@@ -75,21 +78,87 @@ export default function Task() {
     });
   };
 
+  const onChange = (e) => {
+    const file = e.target.files[0];
+    setTaskFile(file)
+    console.log(file);
+    console.log("task file", file['name']);
+  }
+
   const onSave = (task) => {
-    if (task) {
-      saveTask(task)
-        .then((response) => {
-          console.log(response);
-          setSuccessmsg("Task created succesfully");
+    if (flagEditTask == true) {
+      updateTask(taskData)
+        .then((res) => {
+          console.log(res.data.task);
+          setFlagEditTask(true);
+          setSuccessmsg("Task updated successfully")
+          setTaskData({name: "",
+          description: "",
+          boardId: "",
+          priority: ""})
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrormsg("Error updating task")
           closeAlert(3000);
         })
-        .catch((error) => {
-          setErrormsg("Failed process");
-          console.log(error.message);
-          closeAlert(3000);
-        });
+    } else {
+      setTaskData({...taskData, boardId: localStorage.getItem('sprint')})
+      if ( !taskData.name || !taskData.description || ! taskData.boardId) {
+        console.log(taskData);
+        console.log(taskData.boardId);
+        console.log('Failed process: Incomplete data');
+        setErrormsg('Failed process: Incomplete data');
+        closeAlert(3000);
+      } else {
+        const data = new FormData();
+        if (taskFile) {
+          data.append('image', taskFile, taskFile['name']);
+          data.append('name', taskData.name);
+          data.append('description', taskData.description);
+          data.append('boardId', taskData.boardId);
+          data.append('priority', taskData.priority);
+          console.log(data);
+          saveTaskImg(data)
+            .then((res) => {
+              localStorage.setItem('task', res.data.result._id);
+              setTaskData({
+                name: "",
+                description: "",
+                boardId: "",
+                priority: ""
+              })
+              window.location.reload();
+            })
+            .catch((err) => {
+              console.log(err);
+              setErrormsg(err);
+              closeAlert(3000);
+            })
+            
+        }
+        else {
+          saveTask(task)
+            .then((res) => {
+              console.log(res);
+              localStorage.setItem('task', res.data.result._id)
+              setSuccessmsg("Task created succesfully");
+              closeAlert(3000);
+            })
+            .catch((err) => {
+              setErrormsg("Failed process");
+              console.log(err.message);
+              closeAlert(3000);
+            });
+        }
+      }
     }
   };
+
+  const getTaskInfo = () => {
+
+  }
 
   const usersTeam = () => {
     console.log(flagEditTask);
@@ -128,17 +197,22 @@ export default function Task() {
       })
   };
 
-  const userDelete = (userId) => {
-    console.log(userId);
-    // deleteDetail(userId)
-    //   .then((res) => {
-    //     setSuccessmsgUser("Task unassigned");
-    //     closeAlert(3000);
-    //   })
-    //   .catch((error) => {
-    //     setErrormsgUser(error.message);
-    //     closeAlert(3000);
-    //   });
+  const userDelete = (member) => {
+    console.log(member);
+    deleteDetail(member._id)
+      .then((res) => {
+        setSuccessmsgUser("Task unassigned");
+        closeAlert(3000);
+      })
+      .catch((error) => {
+        setErrormsgUser(error.message);
+        closeAlert(3000);
+      });
+  };
+
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (data) => {
+    console.log(data);
   };
 
   const deleteLocalInfo = () => {
@@ -189,7 +263,7 @@ export default function Task() {
                 onClick={deleteLocalInfo}
               ></button>
             </div>
-            <div className="container alerta">
+            <div className="container alertaTask">
               {successmsg !== "" ? (
                 <Alert
                   variant="outlined"
@@ -200,7 +274,7 @@ export default function Task() {
                   {successmsg}
                 </Alert>
               ) : (
-                <div className="alerta"></div>
+                <></>
               )}
 
               {errormsg !== "" ? (
@@ -213,7 +287,7 @@ export default function Task() {
                   {errormsg}
                 </Alert>
               ) : (
-                <div className="alerta"></div>
+                <></>
               )}
             </div>
 
@@ -259,17 +333,14 @@ export default function Task() {
                 <label htmlFor="formFile" className="form-label">
                   Load image
                 </label>
-                <input
-                  // onChange={handleFile}
-                  // defaultValue={taskData.file[0]}
-                  // onChange={(e) => setTaskFile(e.target)}
-                  // onChange={(e) => setTaskData({...taskData, file: e.target.value})}
-                  accept=".png, .jpg, .jpeg, .gif, image/*"
-                  className="form-control"
-                  type="file"
-                  id="formFile"
-                  // {...register("file")}
-                />
+                  <input
+                  value={taskFile}
+                    onChange={onChange}
+                    accept=".png, .jpg, .jpeg, .gif, image/*"
+                    className="form-control"
+                    type="file"
+                    id="formFile"
+                  />
               </div>
             </div>
             <div className="modal-footer">
@@ -323,7 +394,7 @@ export default function Task() {
               ></button>
             </div>
             <div className="modal-body">
-              <div className="container alerta">
+              <div className="container alertaTask">
                 {successmsgUser !== "" ? (
                   <Alert
                     variant="outlined"
@@ -334,7 +405,7 @@ export default function Task() {
                     {successmsgUser}
                   </Alert>
                 ) : (
-                  <div className="alerta"></div>
+                  <></>
                 )}
 
                 {errormsgUser !== "" ? (
@@ -347,7 +418,7 @@ export default function Task() {
                     {errormsgUser}
                   </Alert>
                 ) : (
-                  <div className="alerta"></div>
+                  <></>
                 )}
               </div>
 
@@ -372,7 +443,7 @@ export default function Task() {
                       ) : (<></>)} 
                       <button
                         className="btn btn-danger btn-xs m-1"
-                        onClick={()=> userDelete(member.userId)}
+                        onClick={()=> userDelete(member)}
                       >
                         <FontAwesomeIcon icon={faUserMinus} />
                       </button>

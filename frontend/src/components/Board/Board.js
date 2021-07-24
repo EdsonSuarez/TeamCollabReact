@@ -172,6 +172,9 @@ export default function Board() {
   // const removeColor = id => setColors(colors.filter(color => color.id !== id));
   const handleModalDetailTask = (taskId) => {
     setTaskToDo(taskToDo.filter(task => task._id !== taskId))
+    setTaskDoing(taskDoing.filter(task => task._id !== taskId))
+    setTaskTesting(taskTesting.filter(task => task._id !== taskId))
+    setTaskDone(taskDone.filter(task => task._id !== taskId))
   }
 
   function getRandom() {
