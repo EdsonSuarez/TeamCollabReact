@@ -1,6 +1,6 @@
 import "./style.css";
 import React, { useState } from "react";
-
+import { addSprint } from "../../services/board"
 export default function SprintAdd({ onSprintAdd }) {
   const [message, setMessage] = useState("");
   const [sprintName, setSprintName] = useState("");
@@ -14,8 +14,12 @@ export default function SprintAdd({ onSprintAdd }) {
        closeAlert();
     } else {
       let teamId = localStorage.getItem('team');
-      console.log(teamId);
-      // addBoard().then()
+      let data = {name: sprintName, description: sprintDescription, teamId: teamId}
+      addSprint(data).then( response => {
+        onSprintAdd(response.data.result);  
+        setMessage("Sprint add successful");
+        closeAlert();    
+      });
     }
 
   };

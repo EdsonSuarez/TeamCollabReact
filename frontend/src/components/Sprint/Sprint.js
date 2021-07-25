@@ -1,6 +1,6 @@
 import "./style.css";
 import React, { useState, useEffect } from "react";
-import { editSprint } from "../../services/board";
+import { updateSprint } from "../../services/board";
 
 export default function Sprint({ sprint }) {
   const [sprintName, setSprintName] = useState("");
@@ -15,7 +15,7 @@ export default function Sprint({ sprint }) {
       status: sprint.status,
       active: sprint.active,
     };
-    editSprint(data).then(response => {
+    updateSprint(data).then(response => {
 
     })
   };

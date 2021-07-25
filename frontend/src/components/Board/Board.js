@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
-import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
+import {boardsUser, tasksBoard, teamsUser, deleteSprint} from '../../services/board';
 import {getTeamAdmin, deleteTeam} from '../../services/team';
-import {updateTask, getOneTask} from '../../services/task';
-import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
+import {updateTask, getOneTask, deleteTask } from '../../services/task';
+import {isAdmin, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Team from "../Team/Team";
@@ -17,7 +17,7 @@ export default function Board() {
 
   const [toggle, setToggle] = useState(false);
   const [teamProject, setTeamProject] = useState([]);   
-  const [sprints, setsprints] = useState([]);   
+  const [sprints, setSprints] = useState([]);   
   const [taskToDo, setTaskToDo] = useState([]);   
   const [taskDoing, setTaskDoing] = useState([]);   
   const [taskTesting, setTaskTesting] = useState([]);   
@@ -32,7 +32,6 @@ export default function Board() {
   };
 
   const inicio = ()=>{
-    console.log("se ejecuta")
     if(isAdmin()){  
       getTeamAdmin().then(response =>{  
         const datos = response.data.team;
@@ -40,7 +39,6 @@ export default function Board() {
         setTeamProject(datosActivos);
         setTeamSelect(datosActivos[0]);
         changeTeam(datosActivos[0]);
-        // console.log("daticos", daticos);
       })
       
     }else{
@@ -63,11 +61,12 @@ export default function Board() {
       setProjectName(team.projectId.name)
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
-        setsprints(response.data.boards)
+        setSprints(response.data.boards)
         const datos = response.data.boards
         changeSprint(datos[0]);
-        // console.log("sprints",datos[0])
         setProjectName(team.projectId.name)
+        console.log("dentro de chage",sprints);
+        console.log("dentro de chage dataBoards",response.data.boards);
       })  
     }  
     
@@ -152,13 +151,11 @@ export default function Board() {
   const datosModal = (id) => { 
     localStorage.setItem('task', id );
     getOneTask(id).then(response =>{
-      // console.log("task",response.data.userTask)
       const datos = response.data.userTask;
       setdataModal(datos)  
     })
   }
 
-  // const removeColor = id => setColors(colors.filter(color => color.id !== id));
   const handleModalDetailTask = (taskId) => {
     setTaskToDo(taskToDo.filter(task => task._id !== taskId))
     setTaskDoing(taskDoing.filter(task => task._id !== taskId))
@@ -181,18 +178,63 @@ export default function Board() {
   }
   const handleSprintAdd = (res) => {
     console.log("jejeje",res);
-    setsprints(sprints => [...sprints, res]);
+    setSprints(sprints => [...sprints, res]);
   }
   const modalSprintOpen = (sprint) => {
     setSprintSelect(sprint);
   }
 
   const deleteTeamF = (team) => {
-    console.log("wwwwww");
+    console.log("team",team);
+    console.log("antes",sprints);
+    changeTeam(team);
+    console.log("despues",sprints);
+
+    // const resultado = window.confirm(
+    //   `Do you want to delete the ${team.name}?`
+    //   );
+
+      // if (resultado === true) {
+      //     console.log("teamProject", teamProject);
+      //     console.log("teamSelect", teamSelect);
+      //   sprints.forEach(sprint => {
+      //     console.log("sprint", sprint);
+          // deleteSprintF(sprint);
+        // });
+
+      // }
   }
 
+  const deleteTasks = (tasks) => {
+    tasks.forEach(task => {
+      deleteTask(task._id)
+      .then((res) => {
+          console.log('Deleted task');
+          console.log(res);
+      })
+      .catch((err) => console.log(err))    
+    });
+
+  }
   const deleteSprintF = (sprint) => {
-    console.log(sprint);
+    const resultado = window.confirm(
+      `Do you want to delete the ${sprint.name}?`
+      );
+      if (resultado === true) {
+        let arrayTasks = [taskToDo, taskDoing, taskTesting, taskDone];
+        let count = 0;
+        arrayTasks.forEach(tasks => {
+          count++;
+          console.log(count);
+          deleteTasks(tasks);
+        });
+
+        deleteSprint(sprint._id).then(response => {
+          console.log(response.data.message);
+          setSprints(sprints.filter( sprint1 => sprint1 !== sprint));
+
+        });
+      }
   }
   return (
     <>
@@ -219,10 +261,12 @@ export default function Board() {
                 </div>
                 :
                 <div className="containerButton" >
-                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} </div>
+                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} 
+                  
+                  </div>
                   <span className="spacer"></span>                  
                   <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalTeam" onClick={() => modalTeamOpen(team)}/> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> deleteTeamF(team)}/>       
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> deleteTeamF(team)}/>  
                 </div >           
               }  
             </div>

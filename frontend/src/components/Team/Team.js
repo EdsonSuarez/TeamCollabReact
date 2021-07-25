@@ -37,7 +37,6 @@ export default function Team({team}) {
 
     const userAdd = () => {
       let user = userSelect;
-      console.log(userSelect);
       try {
       if(user){
         user = user.split(",")
@@ -78,7 +77,7 @@ export default function Team({team}) {
             </tr>
           </thead>
           <tbody>
-          {users.length > 0 && (users.map((user, index) =>(
+          {users && (users.map((user, index) =>(
             <tr key={Math.random()}>
               <th scope="row">{index+1}</th>
               <td>{user.userId.fullName}</td>
