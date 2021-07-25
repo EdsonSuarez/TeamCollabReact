@@ -22,7 +22,7 @@ import {
   getManyTask,
 } from "../../services/task";
 
-export default function Task() {
+export default function Task({newTask}) {
   const [taskData, setTaskData] = useState({
     name: "",
     description: "",
@@ -141,8 +141,9 @@ export default function Task() {
         else {
           saveTask(task)
             .then((res) => {
-              console.log(res);
+              console.log("tarea creada", res.data.result);
               localStorage.setItem('task', res.data.result._id)
+              newTask(res.data.result)
               setSuccessmsg("Task created succesfully");
               closeAlert(3000);
             })

@@ -15,23 +15,25 @@ import { exit } from "../../../actions/home";
 export default function Header() {
     const dispatch = useDispatch();
     let history = useHistory();
+    const [change, setChange] = useState();
     const [logueado, setLogueado] = useState();   
     const [admin, setAdmin] = useState();   
 
     const logoutFun = () => {
         dispatch(exit());
-        setLogueado(false)               
+        setChange(false)               
         history.push("/login"); 
     }    
 
     const handleLogin = (value)=>{    
-        setLogueado(value);
+        setChange(value);
     }    
 
     useEffect(()=> {                
         setAdmin(!!isAdmin());
+        setLogueado(!!localStorage.getItem('token'));
 
-    }, [logueado]);
+    }, [change]);
 
     return (
         <>

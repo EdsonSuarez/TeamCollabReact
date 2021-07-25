@@ -61,26 +61,33 @@ export default function Board() {
       setProjectName(team.projectId.name)
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
-        setSprints(response.data.boards)
-        const datos = response.data.boards
-        changeSprint(datos[0]);
         setProjectName(team.projectId.name)
-        console.log("dentro de chage",sprints);
-        console.log("dentro de chage dataBoards",response.data.boards);
+        const datos = response.data.boards
+        if(datos.length > 0){
+          setSprints(datos)
+          changeSprint(datos[0]);
+        }else{          
+          setSprints([]);
+          setTaskToDo([]);
+          setTaskDoing([]);
+          setTaskTesting([]);
+          setTaskDone([]);
+        } 
+        
       })  
-    }  
+    }
     
   }
 
   const changeSprint = (sprint)=>{
+    let taskToDoObj = [];
+    let taskDoingObj = [];
+    let taskTestingObj = [];
+    let taskDoneObj = [];
     if(sprint){
       tasksBoard(sprint._id).then(response=>{ 
         localStorage.setItem('sprint', sprint._id);  
-        const data = response.data.tasks;
-        let taskToDoObj = [];
-        let taskDoingObj = [];
-        let taskTestingObj = [];
-        let taskDoneObj = [];
+        const data = response.data.tasks;        
         data.forEach(task => {
           switch (task.status) {
             case 'to-do':
@@ -163,6 +170,12 @@ export default function Board() {
     setTaskDone(taskDone.filter(task => task._id !== taskId))
   }
 
+  const handleNewTask = (value)=>{
+
+    console.log("value de task", value)
+    setTaskToDo(taskToDo=>[...taskToDo, value]);
+  }
+
   function getRandom() {
     return Math.random();
   }
@@ -238,7 +251,7 @@ export default function Board() {
   }
   return (
     <>
-    <Task></Task>
+    <Task newTask={handleNewTask} /> 
     <input type="checkbox" checkbox="checkbox" onChange={cambio}/>
     <div className="menu">
     {toggle ? <FontAwesomeIcon icon={faAngleLeft} className="iconHead icon" /> :
