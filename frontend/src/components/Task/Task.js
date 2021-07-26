@@ -96,7 +96,7 @@ export default function Task({newTask}) {
           description: "",
           boardId: "",
           priority: ""})
-          window.location.reload();
+          // window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -123,13 +123,16 @@ export default function Task({newTask}) {
           saveTaskImg(data)
             .then((res) => {
               localStorage.setItem('task', res.data.result._id);
+              newTask(res.data.result);
+              setSuccessmsg("Task created succesfully");
+              closeAlert(3000);
               setTaskData({
                 name: "",
                 description: "",
                 boardId: "",
                 priority: ""
               })
-              window.location.reload();
+              // window.location.reload();
             })
             .catch((err) => {
               console.log(err);
@@ -335,7 +338,6 @@ export default function Task({newTask}) {
                   Load image
                 </label>
                   <input
-                  value={taskFile}
                     onChange={onChange}
                     accept=".png, .jpg, .jpeg, .gif, image/*"
                     className="form-control"

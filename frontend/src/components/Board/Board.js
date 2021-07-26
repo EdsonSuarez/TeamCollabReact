@@ -276,7 +276,7 @@ export default function Board() {
         <div className="menuUpper">
           <div className="containerTitleMenu">
             <h3 className="titleMenu">Teams/Proyect</h3>          
-            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalAddTeam" />  
+            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" style = {{cursor: 'pointer'}} data-bs-toggle="modal" data-bs-target="#modalAddTeam" />  
             : <span></span>}
           </div>
           <div className="buttonsMenu">
@@ -306,7 +306,7 @@ export default function Board() {
         <div className="menuLower">
           <div className="containerTitleMenu">
             <h3 className="titleMenu">Sprints</h3>
-            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} data-bs-toggle="modal" data-bs-target="#modalAddSprint"className="iconHead iconos" />  
+            {isAdmin() || isScrumMaster() ? <FontAwesomeIcon icon={faPlusCircle} data-bs-toggle="modal" data-bs-target="#modalAddSprint"className="iconHead iconos" style = {{cursor: 'pointer'}}/>  
               : <span></span>}
           </div>
           <div className="buttonsMenu">
