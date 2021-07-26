@@ -1,7 +1,7 @@
 import React from "react";
 import './style.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencilAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faPencilAlt, faTrashAlt, faImage } from "@fortawesome/free-solid-svg-icons";
 import { deleteTask } from "../../../services/task";
 
 export default function ModalDetailTask({datos, onModalDetailTask}) {   
@@ -36,7 +36,7 @@ export default function ModalDetailTask({datos, onModalDetailTask}) {
                 </div>
 
                 <div className="divCentrado">
-                    {datos.imageUrl ? <img src={datos.imageUrl} alt="Img task" className="imagen" /> : <img alt="imagen"/>}                    
+                    {datos.imageUrl ? <img src={datos.imageUrl} alt="Img task" className="imagen" /> : <FontAwesomeIcon style={{width:200, height:100}} icon={faImage}/>}                    
                 </div>
 
                 <div >

@@ -26,6 +26,8 @@ export default function Board() {
   const [sprintSelect, setSprintSelect] = useState([]);
   const [dataModal, setdataModal] = useState([]);      
   const [projectName, setProjectName] = useState([]);
+  const [active, setActive] = useState("");
+  const [activeSprint, setActiveSprint] = useState("");
   
   const cambio = ()=>{
     setToggle(!toggle)    
@@ -59,6 +61,7 @@ export default function Board() {
     if(team){
       setTeamSelect(team);      
       setProjectName(team.projectId.name)
+      someFunct(team._id);
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
         setProjectName(team.projectId.name)
@@ -85,6 +88,7 @@ export default function Board() {
     let taskTestingObj = [];
     let taskDoneObj = [];
     if(sprint){
+      someFunctSprint(sprint._id);
       tasksBoard(sprint._id).then(response=>{ 
         localStorage.setItem('sprint', sprint._id);  
         const data = response.data.tasks;        
@@ -179,6 +183,14 @@ export default function Board() {
   function getRandom() {
     return Math.random();
   }
+
+  function someFunct(_id) {
+    setActive(_id);
+  }
+
+  function someFunctSprint(_id) {
+    setActiveSprint(_id);
+  }
   
   useEffect(()=> inicio(),[] )
   
@@ -269,11 +281,11 @@ export default function Board() {
             <div key={getRandom()} >
               {!isScrumMaster() && !isAdmin() 
                 ?
-                <div className="containerButton" >
+                <div className={`containerButton ${active === team._id ? "colorFondo" : ""}`} >
                   <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name}</div>
                 </div>
                 :
-                <div className="containerButton" >
+                <div className={`containerButton ${active === team._id ? "colorFondo" : ""}`} >
                   <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} 
                   
                   </div>
@@ -299,11 +311,11 @@ export default function Board() {
             <div key={getRandom()} >
               {!isScrumMaster() && !isAdmin() 
                 ?
-                <div className="containerButton" >
+                <div className={`containerButton ${activeSprint === sprint._id ? "colorFondo" : ""}`} >
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                 </div>
                 :
-                <div className="containerButton" >
+                <div className={`containerButton ${activeSprint === sprint._id ? "colorFondo" : ""}`} >
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
                   <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" onClick={() => modalSprintOpen(sprint)} /> 

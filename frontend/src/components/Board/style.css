@@ -381,3 +381,8 @@ mat-icon {
 .card-title{
     cursor: pointer;
 }
+
+.colorFondo{
+    background-color: #fa897b !important;
+    /* color: #fa897b; */
+}
