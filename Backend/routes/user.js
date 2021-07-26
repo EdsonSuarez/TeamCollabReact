@@ -85,7 +85,6 @@ router.post("/addUserAdmin", Auth, UserAuth, Admin, async (req, res) => {
     !req.body.roleId
   )
     return res.status(401).send("Process failed: Incomplete data");
-  console.log(req.body);
   let user = await User.findOne({ email: req.body.email });
   if (user)
     return res
@@ -138,7 +137,7 @@ router.put("/update", Auth, UserAuth, Admin, async (req, res) => {
 
   hash = findUser.password;
   if (req.body.password) hash = await bcrypt.hash(req.body.password, 10);
-
+  console.log(req.body);
   const role = await Role.findOne({ name: req.body.roleId });
   if (!role)
     return res.status(401).send("Process failed: No role was assigned");

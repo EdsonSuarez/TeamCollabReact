@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import { Alert } from "@material-ui/lab";
-import { listRoles } from "../../../services/admin";
+import { listRoles, listUsers } from "../../../services/admin";
+import { Link } from "@material-ui/core";
+// import ListUsers from "../../../components/Admin/List-user/ListUser";
+// import Login from "../../../components/home//Login/index";
 
 export default function FormUser({
   userData = { fullName: "", email: "", password: "", roleId: "" },
   isEditing,
   rolesData = null,
   registerUser,
+  isAdmin,
 }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -24,6 +28,7 @@ export default function FormUser({
           setErrorMessage("Roles don´t found");
           closeAlert();
         });
+      setUser(userData);
     } else {
       setRoles(rolesData);
     }
@@ -35,7 +40,11 @@ export default function FormUser({
       .then((response) => {
         setSuccessMessage("User saved");
         closeAlert();
-        setUser(userData);
+        if (isEditing || isAdmin) {
+          <Link to="/listUsers"/>;
+        } else {
+         <Link to="/login"/>
+        }
       })
       .catch((response) => {
         setErrorMessage("Error, user don´t saved");
