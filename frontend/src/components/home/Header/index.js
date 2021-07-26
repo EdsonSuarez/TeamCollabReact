@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./styles.css";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useHistory,
-} from "react-router-dom";
+import { Switch, Route, Link, useHistory } from "react-router-dom";
 import Login from "../Login";
 import Board from "../../Board/Board";
 import Home from "../Home";
@@ -24,31 +18,33 @@ import Register from "../Register/Register";
 export default function Header() {
   const dispatch = useDispatch();
   let history = useHistory();
+  const [change, setChange] = useState();
   const [logueado, setLogueado] = useState();
   const [admin, setAdmin] = useState();
 
   const logoutFun = () => {
     dispatch(exit());
-    setLogueado(false);
+    setChange(false);
     history.push("/login");
   };
 
   const handleLogin = (value) => {
-    setLogueado(value);
+    setChange(value);
   };
 
   useEffect(() => {
     setAdmin(!!isAdmin());
-  }, [logueado]);
+    setLogueado(!!localStorage.getItem("token"));
+  }, [change]);
 
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <Link className="nav-link" style={{ color: "white" }} to="/">
-            <a className="navbar-brand" href="/">
+            <span className="navbar-brand" href="/">
               <img src={img1} alt="" />
-            </a>
+            </span>
           </Link>
 
           <button
@@ -92,7 +88,7 @@ export default function Header() {
                   <li className="nav-item">
                     <Link
                       className="nav-link"
-                      style={{ color: "black" }}
+                      style={{ color: "white" }}
                       to="/listRoles"
                     >
                       List Roles
@@ -101,7 +97,7 @@ export default function Header() {
                   <li className="nav-item">
                     <Link
                       className="nav-link"
-                      style={{ color: "black" }}
+                      style={{ color: "white" }}
                       to="/listUsers"
                     >
                       List Users
@@ -110,7 +106,7 @@ export default function Header() {
                   <li className="nav-item">
                     <Link
                       className="nav-link"
-                      style={{ color: "black" }}
+                      style={{ color: "white" }}
                       to="/registerUser"
                     >
                       Register User
@@ -131,10 +127,11 @@ export default function Header() {
                     Login
                   </Link>
                 </button>
-                <button className="btn btn-light">
+                <button className="btn btn-light" style={{ color: "black" }}>
                   <Link
+                    className="nav-link"
+                    style={{ color: "black" }}
                     to="/register"
-                    style={{ textDecoration: "none", color: "black" }}
                   >
                     Register
                   </Link>

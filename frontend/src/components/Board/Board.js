@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
-import {boardsUser, tasksBoard, teamsUser} from '../../services/board';
+import {boardsUser, tasksBoard, teamsUser, deleteSprint} from '../../services/board';
 import {getTeamAdmin, deleteTeam} from '../../services/team';
-import {updateTask, getOneTask} from '../../services/task';
-import {isAdmin, isUser, isScrumMaster} from '../../services/auth';
+import {updateTask, getOneTask, deleteTask } from '../../services/task';
+import {isAdmin, isScrumMaster} from '../../services/auth';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faAngleRight, faAngleLeft, faListAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Team from "../Team/Team";
 import TeamAdd from "../Team/TeamAdd";
 import Sprint from "../Sprint/Sprint";
 import SprintAdd from "../Sprint/SprintAdd";
-import { useHistory } from "react-router-dom";
 import Task from "../Task/Task";
 import ModalDetailTask from "./modalDetailTask";
 
@@ -18,13 +17,13 @@ export default function Board() {
 
   const [toggle, setToggle] = useState(false);
   const [teamProject, setTeamProject] = useState([]);   
-  const [sprints, setsprints] = useState([]);   
+  const [sprints, setSprints] = useState([]);   
   const [taskToDo, setTaskToDo] = useState([]);   
   const [taskDoing, setTaskDoing] = useState([]);   
   const [taskTesting, setTaskTesting] = useState([]);   
   const [taskDone, setTaskDone] = useState([]);   
   const [teamSelect, setTeamSelect] = useState([]);
-  let history = useHistory();
+  const [sprintSelect, setSprintSelect] = useState([]);
   const [dataModal, setdataModal] = useState([]);      
   const [projectName, setProjectName] = useState([]);
   
@@ -33,27 +32,25 @@ export default function Board() {
   };
 
   const inicio = ()=>{
-    console.log("se ejecuta")
     if(isAdmin()){  
       getTeamAdmin().then(response =>{  
-        setTeamProject(response.data.team);
-        setTeamSelect(response.data.team[0]);
         const datos = response.data.team;
-        changeTeam(datos[0]);
-        // console.log("datos",datos);
+        const datosActivos = datos.filter(data => data.projectId.active !== false)
+        setTeamProject(datosActivos);
+        setTeamSelect(datosActivos[0]);
+        changeTeam(datosActivos[0]);
       })
       
     }else{
       teamsUser().then(response =>{
-        const datos = response.data.teamsUser;
-        console.log("datos user", datos)
+        const datos = response.data.teamsUser;        
         const result = []
         datos.forEach(element =>{
           result.push(element.teamId)  
         })
-        // console.log("datos2", result)
-        setTeamProject(result);
-        changeTeam(result[0]);
+        const datosActivos = result.filter(data => data.projectId.active !== false)
+        setTeamProject(datosActivos);
+        changeTeam(datosActivos[0]);
       })
     }
   };
@@ -64,25 +61,33 @@ export default function Board() {
       setProjectName(team.projectId.name)
       boardsUser(team._id).then(response=>{
         localStorage.setItem('team', team._id);
-        setsprints(response.data.boards)
-        const datos = response.data.boards
-        changeSprint(datos[0]);
-        // console.log("sprints",datos[0])
         setProjectName(team.projectId.name)
+        const datos = response.data.boards
+        if(datos.length > 0){
+          setSprints(datos);
+          changeSprint(datos[0]);
+        }else{          
+          setSprints([]);
+          setTaskToDo([]);
+          setTaskDoing([]);
+          setTaskTesting([]);
+          setTaskDone([]);
+        } 
+        
       })  
-    }  
+    }
     
   }
 
   const changeSprint = (sprint)=>{
+    let taskToDoObj = [];
+    let taskDoingObj = [];
+    let taskTestingObj = [];
+    let taskDoneObj = [];
     if(sprint){
       tasksBoard(sprint._id).then(response=>{ 
         localStorage.setItem('sprint', sprint._id);  
-        const data = response.data.tasks;
-        let taskToDoObj = [];
-        let taskDoingObj = [];
-        let taskTestingObj = [];
-        let taskDoneObj = [];
+        const data = response.data.tasks;        
         data.forEach(task => {
           switch (task.status) {
             case 'to-do':
@@ -115,27 +120,17 @@ export default function Board() {
     updateTask(task).then(response =>{
       const anterior = response.data.task;
       switch (anterior.status) {
-        case 'to-do':      
-          console.log("todo", taskToDo)
-          const index = taskToDo.indexOf(anterior);
-          taskToDo.splice(index, 1);    
-          console.log("todo", taskToDo)
-          setTaskToDo(taskToDo=>[...taskToDo]);
+        case 'to-do':                
+          setTaskToDo(taskToDo.filter(task=> task._id !== anterior._id));
           break;
         case 'doing':          
-          const index2 = taskDoing.indexOf(anterior);
-          taskDoing.splice(index2, 1);
-          setTaskDoing(taskDoing=>[...taskDoing]);
+          setTaskDoing(taskDoing.filter(task=> task._id !== anterior._id));          
           break;
         case 'testing':          
-          const index3 = taskTesting.indexOf(anterior);
-          taskTesting.splice(index3, 1);
-          setTaskTesting(taskTesting=>[...taskTesting]);
+          setTaskTesting(taskTesting.filter(task=> task._id !== anterior._id));          
           break;
         case 'done':
-          const index4 = taskDone.indexOf(anterior);
-          taskDone.splice(index4, 1);
-          setTaskDone(taskDone=>[...taskDone]);
+          setTaskDone(taskDone.filter(task=> task._id !== anterior._id));    
           break;
         default:
           break;
@@ -163,15 +158,22 @@ export default function Board() {
   const datosModal = (id) => { 
     localStorage.setItem('task', id );
     getOneTask(id).then(response =>{
-      // console.log("task",response.data.userTask)
       const datos = response.data.userTask;
       setdataModal(datos)  
     })
   }
 
-  // const removeColor = id => setColors(colors.filter(color => color.id !== id));
   const handleModalDetailTask = (taskId) => {
     setTaskToDo(taskToDo.filter(task => task._id !== taskId))
+    setTaskDoing(taskDoing.filter(task => task._id !== taskId))
+    setTaskTesting(taskTesting.filter(task => task._id !== taskId))
+    setTaskDone(taskDone.filter(task => task._id !== taskId))
+  }
+
+  const handleNewTask = (value)=>{
+
+    console.log("value de task", value)
+    setTaskToDo(taskToDo=>[...taskToDo, value]);
   }
 
   function getRandom() {
@@ -184,17 +186,88 @@ export default function Board() {
   const modalTeamOpen = (team) =>{
     setTeamSelect(team);
   }
-
-  const deleteTeamF = (team) => {
-    console.log("wwwwww");
+  const handleTeamAdd = (res) => {
+    setTeamProject(teamProject => [...teamProject, res]);
+  }
+  const handleSprintAdd = (res) => {
+    setSprints(sprints => [...sprints, res]);
+  }
+  const modalSprintOpen = (sprint) => {
+    setSprintSelect(sprint);
   }
 
+  const deleteTeamF = (team) => {
+    const resultado = window.confirm(
+      `Do you want to delete the ${team.name}?`
+      );
+    if (resultado === true) {
+      boardsUser(team._id).then(response=>{
+        const datos = response.data.boards
+        if(datos.length > 0){
+          datos.forEach(sprint => {
+            deleteSprintF(sprint);
+            });
+          deleteTeam(team._id).then(res => {
+            console.log("2222",res.data.result);
+            let data = teamProject.filter(data => data._id !== team._id);
+            localStorage.setItem('team', data[0]._id);
+            setProjectName(data[0].name)
+            setTeamProject(data);
+            changeTeam(data[0]);
+
+          });
+  
+        }else{      
+          deleteTeam(team._id).then(res => {
+            console.log("2222",res.data.result);
+            let data = teamProject.filter(data => data._id !== team._id);
+            localStorage.setItem('team', data[0]._id);
+            setProjectName(data[0].name)
+            setTeamProject(data);
+            changeTeam(data[0]);
+          });    
+          setSprints([]);
+          setTaskToDo([]);
+          setTaskDoing([]);
+          setTaskTesting([]);
+          setTaskDone([]);
+        } 
+  
+      });  
+  
+    }
+
+
+
+  }
+
+  const deleteTasks = (tasks) => {
+    tasks.forEach(task => {
+      deleteTask(task._id)
+      .then((res) => {
+      })
+      .catch((err) => console.log(err))    
+    });
+
+  }
   const deleteSprintF = (sprint) => {
-    console.log(sprint);
+    const resultado = window.confirm(
+      `Do you want to delete the ${sprint.name}?`
+      );
+      if (resultado === true) {
+        tasksBoard(sprint._id).then(response=>{
+          console.log(response.data.tasks);
+          deleteTasks(response.data.tasks);
+        });
+
+        deleteSprint(sprint._id).then(response => {
+        setSprints(sprints.filter( sprint1 => sprint1 !== sprint));
+        });
+      }
   }
   return (
     <>
-    <Task></Task>
+    <Task newTask={handleNewTask} /> 
     <input type="checkbox" checkbox="checkbox" onChange={cambio}/>
     <div className="menu">
     {toggle ? <FontAwesomeIcon icon={faAngleLeft} className="iconHead icon" /> :
@@ -217,10 +290,12 @@ export default function Board() {
                 </div>
                 :
                 <div className="containerButton" >
-                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} </div>
+                  <div className="change" onClick={()=> changeTeam(team)} > {team.name}/{team.projectId.name} 
+                  
+                  </div>
                   <span className="spacer"></span>                  
                   <FontAwesomeIcon icon={faListAlt} className="iconHead iconos" data-bs-toggle="modal" data-bs-target="#modalTeam" onClick={() => modalTeamOpen(team)}/> 
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> deleteTeamF(team)}/>       
+                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick={()=> deleteTeamF(team)}/>  
                 </div >           
               }  
             </div>
@@ -247,7 +322,7 @@ export default function Board() {
                 <div className="containerButton" >
                   <div className="change" onClick={()=> changeSprint(sprint)} > {sprint.name}</div>
                   <span className="spacer"></span>
-                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" /> 
+                  <FontAwesomeIcon icon={faListAlt} data-bs-toggle="modal" data-bs-target="#modalSprint" className="iconHead iconos" onClick={() => modalSprintOpen(sprint)} /> 
                   <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" onClick = {() => deleteSprintF(sprint)} /> 
                 </div >           
               }  
@@ -278,7 +353,7 @@ export default function Board() {
                         
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-warning btn-sx textSize" onClick={()=> updateTasks(task, "doing")}> Doing </button>
@@ -304,7 +379,7 @@ export default function Board() {
             <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
@@ -329,7 +404,7 @@ export default function Board() {
             <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
@@ -354,7 +429,7 @@ export default function Board() {
             <div className="cardTask" style={task.priority == '1' ?{background:"#d0e6a5"}: task.priority == '2'?{background:"#ffdd95"}: {background:"#fc887b"}}>              
               <div className="card-body">
                 <h5 className="card-title" data-bs-toggle="modal" data-bs-target="#detaTask" onClick={()=> datosModal(task._id)}>{task.name}</h5>  
-                <p className="card-text">{task.description}</p>
+                <p className="task-card-text">{task.description}</p>
                 <div className="row">
                   <div className="btn-group" role="group">
                     <button className="btn botonCard btn-danger btn-sx textSize" onClick={()=> updateTasks(task, "to-do")}> To-do </button>
@@ -371,7 +446,7 @@ export default function Board() {
     </div>
 
     <div className="containerOtro">
-        <h3 className="titleSections"></h3>        
+        <h3 className="titleSections"></h3>      
 
     </div>
     </div>
@@ -390,23 +465,23 @@ export default function Board() {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <TeamAdd/>
+      <TeamAdd onTeamAdd={handleTeamAdd}/>
     </div>
     
     <div id="modalSprint"
       className="modal fade"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-    ><Sprint/></div>
+    ><Sprint sprint={sprintSelect}/></div>
 
     <div id="modalAddSprint"
       className="modal fade"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-    ><SprintAdd/></div>
+    ><SprintAdd onSprintAdd={handleSprintAdd}/></div>
 
     <div id="detaTask" className="modal fade" tabIndex="-1">
-      <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask}/>
+      <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask} team={teamSelect}/>
     </div>
 
     </>

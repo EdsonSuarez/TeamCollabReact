@@ -10,3 +10,11 @@
     align-items: center;
     justify-content: center;
 }
+
+.assigned {
+    padding: auto;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

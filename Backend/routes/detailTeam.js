@@ -45,7 +45,8 @@ router.get("/getTeam/:_id", async (req, res) => {
   if(!boards) return res.status(401).send("Error: the team doesn't exist");
 
   const team = await DetailTeam.find({teamId: req.params._id})
-  .populate({path: "userId", match:{active: true}}).exec(); 
+  .populate({path: "userId", match:{active: true}, populate:{path:'roleId'}})
+  .exec(); 
   if (!team) return res.status(401).send("Error fetching team");
   return res.status(200).send({ team });
 });
