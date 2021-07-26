@@ -279,7 +279,9 @@ export default function Board() {
   }
   return (
     <>
-    <Task newTask={handleNewTask} /> 
+    {(isScrumMaster() || isAdmin()) ?
+      <Task newTask={handleNewTask} />  : <></>
+    }
     <input type="checkbox" checkbox="checkbox" onChange={cambio}/>
     <div className="menu">
     {toggle ? <FontAwesomeIcon icon={faAngleLeft} className="iconHead icon" /> :

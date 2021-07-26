@@ -24,7 +24,7 @@ export default function Header() {
                 <div className="carousel-item active">
                     <img className="bd-placeholder-img sizeCarousel" width="100%" aria-hidden="true"
                         preserveAspectRatio="xMidYMid slice" focusable="false" src={img1}
-                        alt="algo" />
+                        alt="carousel" />
                     <div className="container">
                         <div className="carousel-caption text-start">
                             <h1>Organize your Team</h1>
