@@ -1,37 +1,25 @@
-
 .all {
   display: flex;
-  height: 93%;
+  height: 40vmax;
+  align-content: center;
 }
 
 .izq {
   width: 40%;
-  height: auto;
+  height: 100%;
+  padding: 40px 10px 10px 10px;
 }
 
 .der {
   width: 60%;
-  height: auto;
+  height: 100%;
 }
 
 .fondo {
   background-image: url("../../../assets/fondo.jpg");
   background-size: cover;
   height: 100%;
-  width: 100%;
+  width: 90%;
 }
 
-/* .button {
-  width: 50%;
-}
-.containBtn {
-  display: flex;
-  justify-content: center;
-}
-
-.card {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
-} */
 

@@ -3,7 +3,7 @@ import axiosInstance from "../helpers/axios";
 export const listUsers = () => axiosInstance.get("/user/get");
 
 export const updateUser = (user) =>
-  axiosInstance.put("/user/addUserAdmin", user);
+  axiosInstance.put("/user/update", user);
 
 export const registerUser = (user) =>
   axiosInstance.post("user/addUserAdmin", user);

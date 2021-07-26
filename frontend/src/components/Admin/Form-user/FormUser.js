@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import { Alert } from "@material-ui/lab";
+import { listRoles } from "../../../services/admin";
 
 export default function FormUser({
   userData = { fullName: "", email: "", password: "", roleId: "" },
@@ -11,13 +12,23 @@ export default function FormUser({
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [user, setUser] = useState(userData);
+  const [roles, setRoles] = useState([]);
 
-  // useEffect(()=> {
-  //   setUser(userData);
-  //   // console.log(userData);
-  // },[])
-
-  console.log("user", user);
+  useEffect(() => {
+    if (isEditing === true) {
+      listRoles()
+        .then((response) => {
+          setRoles(response.data.roles);
+        })
+        .catch((response) => {
+          setErrorMessage("Roles don´t found");
+          closeAlert();
+        });
+      setUser(userData);
+    } else {
+      setRoles(rolesData);
+    }
+  }, [userData]);
 
   const handleUser = (event) => {
     event.preventDefault();
@@ -52,7 +63,7 @@ export default function FormUser({
 
   return (
     <>
-      <form onSubmit={handleUser}>
+      <form onSubmit={handleUser} className="formContainer">
         <div className={isEditing ? "modal-header" : "text-center"}>
           <h2 className="modal-title" id="exampleModalLabel">
             {isEditing ? "Edit User" : "Register User"}
@@ -135,7 +146,7 @@ export default function FormUser({
             ></input>
             <span></span>
           </div>
-          {rolesData.length ? (
+          {roles ? (
             <div
               className={
                 isEditing ? "row justify-content-center" : "form-control"
@@ -148,7 +159,7 @@ export default function FormUser({
                 }
               >
                 {user.roleId ? "" : <option selected>Choose...</option>}
-                {rolesData.map((rol) => (
+                {roles.map((rol) => (
                   <option value={rol.name} key={rol._id}>
                     {rol.name}
                   </option>

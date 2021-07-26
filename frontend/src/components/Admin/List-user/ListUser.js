@@ -11,25 +11,11 @@ import { Alert } from "@material-ui/lab";
 import { blue, red } from "@material-ui/core/colors";
 import EditUser from "../Edit-user/EditUser";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-    color: blue,
-  },
-}));
-
 export default function ListUser() {
-  const classes = useStyles();
-
   const [users, setUsers] = useState([]);
   const [userData, setUserData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [rolesData, setRolesData] = useState([]);
 
   useEffect(() => {
     listUsers()
@@ -37,15 +23,7 @@ export default function ListUser() {
         setUsers(response.data.user);
       })
       .catch((response) => {
-        setErrorMessage(response.data);
-        closeAlert();
-      });
-    listRoles()
-      .then((response) => {
-        setRolesData(response.data.roles);
-      })
-      .catch((response) => {
-        setErrorMessage(response.data);
+        setErrorMessage("Users don´t found");
         closeAlert();
       });
   }, []);
@@ -149,17 +127,20 @@ export default function ListUser() {
                   data-bs-parent="#accordionUsers"
                 >
                   <div className="row accordion-body">
-                    <p className="col">{user.email}</p>
+                    <p className="col-5">{user.email}</p>
                     <p className="col">
                       <span className={user.active ? "active" : "deactive"}>
                         {user.active ? "activo" : "inactivo"}
                       </span>
                     </p>
-                    {/* <button
+                    <p className="col">{user.roleId.name}</p>
+                    {/* <EditUser userData={user} rolesData={rolesData} /> */}
+                    <button
+                      id="task-user"
                       data-bs-toggle="modal"
-                      data-bs-target="modalEditUser"
-                      onClick={() => editUser(user)}
+                      data-bs-target="#modalUser"
                       className="col-1 btn btn-primary"
+                      onClick={() => editUser(user)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -171,8 +152,7 @@ export default function ListUser() {
                       >
                         <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z" />
                       </svg>
-                    </button> */}
-                    <EditUser userData={user} rolesData={rolesData}/>
+                    </button>
                     <button
                       onClick={() => erraseUser(user)}
                       className="col-1 btn btn-danger"
@@ -194,6 +174,15 @@ export default function ListUser() {
             ))}
           </div>
         </div>
+      </div>
+      <div
+        className="modal fade"
+        id="modalUser"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <EditUser userData={userData} />
       </div>
     </>
   );
