@@ -25,6 +25,7 @@ export default function RegisterUser() {
           userData={userData}
           isEditing={isEditing}
           rolesData={rolesData}
+          isAdmin={true}
           registerUser={registerUser}
         />
       </div>
