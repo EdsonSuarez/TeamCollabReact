@@ -1,6 +1,6 @@
 import React, { useState, useEffect }  from "react";
 import './styles.css';
-import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-router-dom'
+import { Switch, Route, Link, useHistory } from 'react-router-dom'
 import Login from '../Login';
 import Board from '../../Board/Board';
 import Home from '../Home';
@@ -39,7 +39,8 @@ export default function Header() {
         <>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid">
-            <Link className="nav-link" style={{color:"white"}} to="/"><a className="navbar-brand" href="/"><img src={img1} alt="" /></a></Link>
+            <Link className="nav-link" style={{color:"white"}} to="/">
+                <span className="navbar-brand" href="/"><img src={img1} alt="" /></span></Link>
             
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>

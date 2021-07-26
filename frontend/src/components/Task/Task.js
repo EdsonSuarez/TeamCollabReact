@@ -351,7 +351,7 @@ export default function Task({newTask}) {
               >
                 <FontAwesomeIcon icon={faSave} />
               </button>
-              <button
+              {/* <button
                 className="btn btn-success btn-xs m-1"
                 onClick={usersTeam}
               >
@@ -360,7 +360,7 @@ export default function Task({newTask}) {
                   data-bs-toggle="modal"
                   data-bs-target="#modalTeamm"
                 />
-              </button>
+              </button> */}
               <button
                 type="submit"
                 className="btn btn-secondary"
@@ -374,7 +374,7 @@ export default function Task({newTask}) {
         </div>
       </div>
 
-      <div
+      {/* <div
         className="modal fade"
         id="modalTeamm"
         tabIndex="-1"
@@ -467,7 +467,7 @@ export default function Task({newTask}) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

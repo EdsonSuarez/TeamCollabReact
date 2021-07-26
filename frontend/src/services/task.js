@@ -13,5 +13,5 @@ export const updateTask = (task) => axiosInstance.put(uri + 'task/update', task)
 export const getTeam = (teamId) => axiosInstance.get(uri + 'detailTeam/getTeam/' + teamId);
 export const addDetail = (user) => axiosInstance.post(uri + 'detailTask/add', user);
 export const getUsersTask = (taskId) => axiosInstance.get(uri + 'detailTask/getUsers/' + taskId);
-export const deleteDetail = (userId) => axiosInstance.delete(uri + 'detailTask/delete/' + userId);
+export const deleteDetail = (id) => axiosInstance.delete(uri + 'detailTask/delete/' + id);
 export const getManyTask = (id) => axiosInstance.get(uri + 'task/getManyTask/' + id);

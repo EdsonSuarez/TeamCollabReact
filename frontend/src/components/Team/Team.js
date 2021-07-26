@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import {getUsers, deleteDetail, addDetail} from '../../services/team';
 import {listUsersAll} from '../../services/user';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faUserMinus, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+
 
 export default function Team({team}) {
-
     const [users, setUsers] = useState([]);   
     const [usersAll, setUsersAll] = useState([]);  
     const [userSelect, setUserSelect] = useState([]);  
@@ -16,6 +16,7 @@ export default function Team({team}) {
                 if(team._id){
                 getUsers(team._id).then(response=>{
                   setUsers(response.data.team);
+
               });
             }
             } catch (error) {}
@@ -43,10 +44,8 @@ export default function Team({team}) {
         let data = { userId:user[0], teamId: team._id};
         addDetail(data).then(response =>{
           user = {_id: response.data.result._id, userId: {fullName: user[1], roleId: {name: user[2]}, _id: user[0]}}
-          users.push(user)
-          setUsers(users)        
+          setUsers(users => [...users, user]) 
         })
-        listUsersAllF()
       }
     } catch {}
     }
@@ -81,13 +80,14 @@ export default function Team({team}) {
             <tr key={Math.random()}>
               <th scope="row">{index+1}</th>
               <td>{user.userId.fullName}</td>
-              <td>{user.userId.roleId.name}</td>
+              {user.userId.roleId.name === 'user' ? <td>Developer</td> : <td>{user.userId.roleId.name}</td>}
               <td><button
                 className="btn btn-danger btn-sm m-0"
                 title="Delete User"
+                style={{padding: "0px 10px 5px 10px"}}
                 onClick={() => userDelete(user)}
               >
-                  <FontAwesomeIcon icon={faTrashAlt} className="iconHead iconos" />      
+                  <FontAwesomeIcon icon={faUserMinus} className="iconos" size="lg"/>      
               </button></td>
             </tr>
           )))}
@@ -124,7 +124,7 @@ export default function Team({team}) {
             className="btn btn-success btn-sm"
             onClick={() => listUsersAllF()}
           >
-            <FontAwesomeIcon icon={faPlusCircle} className="iconHead iconos" /> 
+            <FontAwesomeIcon icon={faUserPlus} className="iconHead iconos" /> 
           </button>
           )}
 

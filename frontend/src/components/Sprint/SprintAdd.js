@@ -1,8 +1,11 @@
 import "./style.css";
 import React, { useState } from "react";
-import { addSprint } from "../../services/board"
+import { addSprint } from "../../services/board";
+import { Alert } from "@material-ui/lab";
+
 export default function SprintAdd({ onSprintAdd }) {
-  const [message, setMessage] = useState("");
+  const [errormsg, setErrormsg] = useState("");
+  const [successmsg, setSuccessmsg] = useState("");
   const [sprintName, setSprintName] = useState("");
   const [sprintDescription, setSprintDescription] = useState("");
 
@@ -10,28 +13,27 @@ export default function SprintAdd({ onSprintAdd }) {
     console.log(sprintName);
     console.log(sprintDescription);
     if (!sprintName || !sprintDescription) {
-       setMessage("Imcomplete Data");
-       closeAlert();
+      setErrormsg("Imcomplete Data");
+      closeAlert(3000);
     } else {
       let teamId = localStorage.getItem('team');
       let data = {name: sprintName, description: sprintDescription, teamId: teamId}
       addSprint(data).then( response => {
         onSprintAdd(response.data.result);  
-        setMessage("Sprint add successful");
-        closeAlert();    
+        setSuccessmsg("Sprint add successful");
+        closeAlert(3000);    
       });
     }
 
   };
-  function closeAlert() {
-    setTimeout(() => {
-      setMessage("");
-    }, 3000);
-  }
 
-  function closeX() {
-    setMessage("");
-  }
+  const closeAlert = (time) => {
+    setTimeout(() => {
+      setErrormsg("");
+      setSuccessmsg("");
+    }, time);
+  };
+
   return (
     <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div className="modal-content">
@@ -46,24 +48,33 @@ export default function SprintAdd({ onSprintAdd }) {
             aria-label="Close"
           ></button>
         </div>
-        {message && (  <div className="col-12 col-lg-12">
-          <div
-            className="alert alert-info alert-dismissible alertJustify d-flex"
-            role="alert"
-          >
-            <div className="alert-message">{message}</div>
-            &nbsp;&nbsp;
-            <button
-              type="button"
-              className="close alertButton"
-              data-dismiss="alert"
-              aria-label="Close"
-              onclick={() => closeX()}
-            >
-              <span aria-hidden="true">X</span>
-            </button>
-          </div>
-        </div>)}
+        <div className="container alertaTask">
+              {successmsg !== "" ? (
+                <Alert
+                  variant="outlined"
+                  severity="success"
+                  className="alertaTask"
+                  onClose={() => closeAlert(0)}
+                >
+                  {successmsg}
+                </Alert>
+              ) : (
+                <></>
+              )}
+
+              {errormsg !== "" ? (
+                <Alert
+                  variant="outlined"
+                  severity="error"
+                  className="alertaTask"
+                  onClose={() => closeAlert(0)}
+                >
+                  {errormsg}
+                </Alert>
+              ) : (
+                <></>
+              )}
+            </div>
       
         <div className="modal-body">
         <label htmlFor="exampleInputEmail1">Name</label>
@@ -79,7 +90,7 @@ export default function SprintAdd({ onSprintAdd }) {
           <br />
           <label htmlFor="exampleInputEmail1">Description</label>
           <textarea
-          class="form-control"
+          className="form-control"
           aria-label="With textarea"
           placeholder="Description"
           onChange = {(event) => setSprintDescription(event.target.value)}

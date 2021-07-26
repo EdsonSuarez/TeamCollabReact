@@ -64,7 +64,7 @@ export default function Board() {
         setProjectName(team.projectId.name)
         const datos = response.data.boards
         if(datos.length > 0){
-          setSprints(datos)
+          setSprints(datos);
           changeSprint(datos[0]);
         }else{          
           setSprints([]);
@@ -190,7 +190,6 @@ export default function Board() {
     setTeamProject(teamProject => [...teamProject, res]);
   }
   const handleSprintAdd = (res) => {
-    console.log("jejeje",res);
     setSprints(sprints => [...sprints, res]);
   }
   const modalSprintOpen = (sprint) => {
@@ -198,32 +197,54 @@ export default function Board() {
   }
 
   const deleteTeamF = (team) => {
-    console.log("team",team);
-    console.log("antes",sprints);
-    changeTeam(team);
-    console.log("despues",sprints);
+    const resultado = window.confirm(
+      `Do you want to delete the ${team.name}?`
+      );
+    if (resultado === true) {
+      boardsUser(team._id).then(response=>{
+        const datos = response.data.boards
+        if(datos.length > 0){
+          datos.forEach(sprint => {
+            deleteSprintF(sprint);
+            });
+          deleteTeam(team._id).then(res => {
+            console.log("2222",res.data.result);
+            let data = teamProject.filter(data => data._id !== team._id);
+            localStorage.setItem('team', data[0]._id);
+            setProjectName(data[0].name)
+            setTeamProject(data);
+            changeTeam(data[0]);
 
-    // const resultado = window.confirm(
-    //   `Do you want to delete the ${team.name}?`
-    //   );
+          });
+  
+        }else{      
+          deleteTeam(team._id).then(res => {
+            console.log("2222",res.data.result);
+            let data = teamProject.filter(data => data._id !== team._id);
+            localStorage.setItem('team', data[0]._id);
+            setProjectName(data[0].name)
+            setTeamProject(data);
+            changeTeam(data[0]);
+          });    
+          setSprints([]);
+          setTaskToDo([]);
+          setTaskDoing([]);
+          setTaskTesting([]);
+          setTaskDone([]);
+        } 
+  
+      });  
+  
+    }
 
-      // if (resultado === true) {
-      //     console.log("teamProject", teamProject);
-      //     console.log("teamSelect", teamSelect);
-      //   sprints.forEach(sprint => {
-      //     console.log("sprint", sprint);
-          // deleteSprintF(sprint);
-        // });
 
-      // }
+
   }
 
   const deleteTasks = (tasks) => {
     tasks.forEach(task => {
       deleteTask(task._id)
       .then((res) => {
-          console.log('Deleted task');
-          console.log(res);
       })
       .catch((err) => console.log(err))    
     });
@@ -234,18 +255,13 @@ export default function Board() {
       `Do you want to delete the ${sprint.name}?`
       );
       if (resultado === true) {
-        let arrayTasks = [taskToDo, taskDoing, taskTesting, taskDone];
-        let count = 0;
-        arrayTasks.forEach(tasks => {
-          count++;
-          console.log(count);
-          deleteTasks(tasks);
+        tasksBoard(sprint._id).then(response=>{
+          console.log(response.data.tasks);
+          deleteTasks(response.data.tasks);
         });
 
         deleteSprint(sprint._id).then(response => {
-          console.log(response.data.message);
-          setSprints(sprints.filter( sprint1 => sprint1 !== sprint));
-
+        setSprints(sprints.filter( sprint1 => sprint1 !== sprint));
         });
       }
   }
@@ -465,7 +481,7 @@ export default function Board() {
     ><SprintAdd onSprintAdd={handleSprintAdd}/></div>
 
     <div id="detaTask" className="modal fade" tabIndex="-1">
-      <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask}/>
+      <ModalDetailTask datos={dataModal} onModalDetailTask={handleModalDetailTask} team={teamSelect}/>
     </div>
 
     </>

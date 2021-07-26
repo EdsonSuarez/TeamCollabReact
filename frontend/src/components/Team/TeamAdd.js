@@ -3,22 +3,31 @@ import React, { useState, useEffect } from "react";
 import {addTeam, addDetail} from '../../services/team';
 import {fetchAdmin, fetchScrum} from '../../services/project';
 import {isAdmin, isScrumMaster, userData} from '../../services/auth';
+import { Alert } from "@material-ui/lab";
 
 export default function TeamAdd({onTeamAdd}) {
-  const [message, setMessage] = useState("");   
+  const [errormsg, setErrormsg] = useState("");
+  const [successmsg, setSuccessmsg] = useState("");
   const [teamName, setTeamName] = useState("");   
   const [projectSelect, setProjectSelect] = useState("");   
   const [projects, setProjects] = useState([]);   
 
+  const closeAlert = (time) => {
+    setTimeout(() => {
+      setErrormsg("");
+      setSuccessmsg("");
+    }, time);
+  };
+  
   const saveTeam = () => {
     if(!teamName || !projectSelect){  
-      setMessage('Imcomplete Data');
-      closeAlert();
+      setErrormsg('Imcomplete Data');
+      closeAlert(3000);
     } else {
       let team = {name: teamName, projectId: projectSelect};
       addTeam(team).then(response => {
-        setMessage('Team add successful');
-        closeAlert();
+        setSuccessmsg('Team add successful');
+        closeAlert(3000);
         onTeamAdd(response.data.teamResult);
         if ( isScrumMaster()) {
           let data = { userId: userData()._id , teamId: response.data.teamResult._id };
@@ -50,17 +59,6 @@ export default function TeamAdd({onTeamAdd}) {
   }
 
   useEffect(()=> listProjects(),[] )
-
-  function closeAlert() {
-    setTimeout(() => {
-      setMessage('');
-    }, 3000);
-  }
-
-  function closeX() {
-    setMessage('');
-  }
-
   
     return (
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -74,26 +72,33 @@ export default function TeamAdd({onTeamAdd}) {
               aria-label="Close"
             ></button>
           </div>
-          {message && (<div className="col-12 col-lg-12" >
-            <div
-              className="alert alert-info alert-dismissible alertJustify d-flex"
-              role="alert"
-            >
-              <div className="alert-message">
-                {message}
-              </div>
-              &nbsp;&nbsp;
-              <button
-                type="button"
-                className="close alertButton"
-                data-dismiss="alert"
-                aria-label="Close"
-                onClick={() => closeX()}
-              >
-                <span aria-hidden="true">X</span>
-              </button>
+          <div className="container alertaTask">
+              {successmsg !== "" ? (
+                <Alert
+                  variant="outlined"
+                  severity="success"
+                  className="alertaTask"
+                  onClose={() => closeAlert(0)}
+                >
+                  {successmsg}
+                </Alert>
+              ) : (
+                <></>
+              )}
+
+              {errormsg !== "" ? (
+                <Alert
+                  variant="outlined"
+                  severity="error"
+                  className="alertaTask"
+                  onClose={() => closeAlert(0)}
+                >
+                  {errormsg}
+                </Alert>
+              ) : (
+                <></>
+              )}
             </div>
-          </div>)}
           <div className="modal-body">
           <label htmlFor="exampleInputEmail1">Name</label>
             <input
