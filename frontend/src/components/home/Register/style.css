@@ -1,0 +1,37 @@
+
+.all {
+  display: flex;
+  height: 93%;
+}
+
+.izq {
+  width: 40%;
+  height: auto;
+}
+
+.der {
+  width: 60%;
+  height: auto;
+}
+
+.fondo {
+  background-image: url("../../../assets/fondo.jpg");
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+}
+
+/* .button {
+  width: 50%;
+}
+.containBtn {
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+} */
+

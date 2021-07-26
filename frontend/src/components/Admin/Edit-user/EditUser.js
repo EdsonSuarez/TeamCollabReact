@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormUser from "../Form-user/FormUser";
 
 export default function EditUser({ userData, rolesData }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const editUser = () => {
-    setIsEditing(true);
-  };
+  const [isEditing, setIsEditing] = useState(true);
+
+  useEffect(()=> {
+    
+  },[userData])
   return (
     <>
       <div
@@ -17,11 +18,6 @@ export default function EditUser({ userData, rolesData }) {
       >
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div className="modal-content">
-            <div className="modal-header">
-              <h2 className="modal-title" id="exampleModalLabel">
-                Edit User
-              </h2>
-            </div>
             <FormUser
               userData={userData}
               rolesData={rolesData}
@@ -35,7 +31,7 @@ export default function EditUser({ userData, rolesData }) {
         data-bs-toggle="modal"
         data-bs-target="#modalUser"
         className="col-1 btn btn-primary"
-        onClick={() => editUser()}
+        // onClick={() => editUser()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -52,9 +48,3 @@ export default function EditUser({ userData, rolesData }) {
   );
 }
 
-{
-  /* <div
-  className="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-  id="userFormModal"
-></div>; */
-}

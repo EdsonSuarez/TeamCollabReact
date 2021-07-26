@@ -85,7 +85,7 @@ router.post("/addUserAdmin", Auth, UserAuth, Admin, async (req, res) => {
     !req.body.roleId
   )
     return res.status(401).send("Process failed: Incomplete data");
-
+  console.log(req.body);
   let user = await User.findOne({ email: req.body.email });
   if (user)
     return res
@@ -97,7 +97,6 @@ router.post("/addUserAdmin", Auth, UserAuth, Admin, async (req, res) => {
   const role = await Role.findOne({ name: req.body.roleId });
   if (!role)
     return res.status(401).send("Process failed: No role was assigned");
-
   user = new User({
     fullName: req.body.fullName,
     email: req.body.email,

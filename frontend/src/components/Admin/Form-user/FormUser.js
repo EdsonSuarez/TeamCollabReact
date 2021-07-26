@@ -2,19 +2,34 @@ import React, { useEffect, useState } from "react";
 import "./style.css";
 import { Alert } from "@material-ui/lab";
 
-export default function FormUser({ userData, isEditing, rolesData = [] }) {
+export default function FormUser({
+  userData = { fullName: "", email: "", password: "", roleId: "" },
+  isEditing,
+  rolesData = [],
+  registerUser,
+}) {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [user, setUser] = useState(userData);
 
-  useEffect(()=> {
-    setUser("");
-    setSuccessMessage("");
-    setErrorMessage("");
-  },[])
+  // useEffect(()=> {
+  //   setUser(userData);
+  //   // console.log(userData);
+  // },[])
+
+  console.log("user", user);
 
   const handleUser = (event) => {
     event.preventDefault();
+    registerUser(user)
+      .then((response) => {
+        setSuccessMessage("User saved");
+        closeAlert();
+      })
+      .catch((response) => {
+        setErrorMessage("Error, user don´t saved");
+        closeAlert();
+      });
   };
 
   const closeAlert = () => {
@@ -37,7 +52,12 @@ export default function FormUser({ userData, isEditing, rolesData = [] }) {
 
   return (
     <>
-      <form >
+      <form onSubmit={handleUser}>
+        <div className={isEditing ? "modal-header" : "text-center"}>
+          <h2 className="modal-title" id="exampleModalLabel">
+            {isEditing ? "Edit User" : "Register User"}
+          </h2>
+        </div>
         <div className="container alerta">
           {successMessage !== "" ? (
             <Alert
@@ -65,43 +85,71 @@ export default function FormUser({ userData, isEditing, rolesData = [] }) {
             <div className="alerta"></div>
           )}
         </div>
-        <div className="modal-body">
-          <div className="row justify-content-center">
+        <div className={isEditing ? "modal-body" : "container"}>
+          <div
+            className={
+              isEditing ? "row justify-content-center" : "form-control"
+            }
+          >
             <input
-              className="form-control"
+              className={isEditing ? "form-control" : "input-form"}
               type="text"
               placeholder="Full Name"
               required
               value={user.fullName}
-              onChange={({ target: { value } }) => setUser({...user, fullName: value})}
+              onChange={({ target: { value } }) =>
+                setUser({ ...user, fullName: value })
+              }
             ></input>
           </div>
-          <div className="row justify-content-center">
+          <div
+            className={
+              isEditing ? "row justify-content-center" : "form-control"
+            }
+          >
             <input
-              className="form-control"
+              className={isEditing ? "form-control" : "input-form"}
               type="email"
               placeholder="Email"
               required
               value={user.email}
-              onChange={({ target: { value } }) => setUser({...user, email: value})}
+              onChange={({ target: { value } }) =>
+                setUser({ ...user, email: value })
+              }
             ></input>
           </div>
-          <div className="row justify-content-center">
+          <div
+            className={
+              isEditing ? "row justify-content-center" : "form-control"
+            }
+          >
             <input
-              className="form-control"
+              className={isEditing ? "form-control" : "input-form"}
               type="password"
               placeholder="Password"
               required
               value={user.password}
-              onChange={({ target: { value } }) => setUser({...user, password: value})}
+              onChange={({ target: { value } }) =>
+                setUser({ ...user, password: value })
+              }
             ></input>
+            <span></span>
           </div>
           {rolesData.length ? (
-            <div className="row justify-content-center">
-              <select className="form-select">
+            <div
+              className={
+                isEditing ? "row justify-content-center" : "form-control"
+              }
+            >
+              <select
+                className="form-select"
+                onChange={({ target: { value } }) =>
+                  setUser({ ...user, roleId: value })
+                }
+              >
                 {user.roleId ? "" : <option selected>Choose...</option>}
                 {rolesData.map((rol) => (
-                  <option value={rol._id} key={rol._id}>
+                  <option value={rol.name} key={rol._id}>
                     {rol.name}
                   </option>
                 ))}
@@ -110,16 +158,20 @@ export default function FormUser({ userData, isEditing, rolesData = [] }) {
           ) : (
             ""
           )}
-          <div className="modal-footer">
+          <div className={isEditing ? "modal-footer" : "container-button"}>
             <div className="col-lg-6">
-              <button>{isEditing ? "Update" : "Register"}</button>
+              <button
+                type="submit"
+                className={isEditing ? "btn btn-primary" : "button colorButton"}
+              >
+                {isEditing ? "Update" : "Register"}
+              </button>
             </div>
             <div className="col-lg-6">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className={isEditing ? "btn btn-secondary" : "button bg-danger"}
                 data-bs-dismiss="modal"
-                onClick={() => setDefault}
               >
                 Cancel
               </button>

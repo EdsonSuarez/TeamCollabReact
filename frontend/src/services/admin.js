@@ -5,6 +5,9 @@ export const listUsers = () => axiosInstance.get("/user/get");
 export const updateUser = (user) =>
   axiosInstance.put("/user/addUserAdmin", user);
 
+export const registerUser = (user) =>
+  axiosInstance.post("user/addUserAdmin", user);
+
 export const deleteUser = (user) => axiosInstance.put("/user/delete", user);
 
 export const listRoles = () => axiosInstance.get("/role/get/");
