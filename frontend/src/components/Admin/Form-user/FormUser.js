@@ -6,7 +6,7 @@ import { listRoles } from "../../../services/admin";
 export default function FormUser({
   userData = { fullName: "", email: "", password: "", roleId: "" },
   isEditing,
-  rolesData = [],
+  rolesData = null,
   registerUser,
 }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -24,11 +24,10 @@ export default function FormUser({
           setErrorMessage("Roles don´t found");
           closeAlert();
         });
-      setUser(userData);
     } else {
       setRoles(rolesData);
     }
-  }, [userData]);
+  }, [userData, user]);
 
   const handleUser = (event) => {
     event.preventDefault();
@@ -36,6 +35,7 @@ export default function FormUser({
       .then((response) => {
         setSuccessMessage("User saved");
         closeAlert();
+        setUser(userData);
       })
       .catch((response) => {
         setErrorMessage("Error, user don´t saved");
@@ -146,7 +146,7 @@ export default function FormUser({
             ></input>
             <span></span>
           </div>
-          {roles ? (
+          {roles !== null ? (
             <div
               className={
                 isEditing ? "row justify-content-center" : "form-control"
